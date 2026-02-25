@@ -1,7 +1,8 @@
 --||Services||--
 local RS = game:GetService("ReplicatedStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
-local setupCollisionGroups = require(ServerScriptService.utils.setupCollisionGroups)
+local setupCollisionGroups = require(ServerScriptService.Collision)
 --||Nevermore Shit||--
 ----------------------------- getting servicebag and loader -----------------------------
 
@@ -19,10 +20,10 @@ _G.FistBag = serviceBag
 ---------- OTHERS ----------
 ---------- BINDERS ----------
 local Binder = Nevermore("Binder")
-local Cart = Nevermore("Cart")
+local Car = Nevermore("Car")
 
 local Binders = {
-	["Cart"] = Cart,
+	["Car"] = Car,
 }
 ---------- USE BINDER PORVIDER ----------
 local BinderProvider = Nevermore("BinderProvider")
@@ -42,3 +43,16 @@ _G.ServiceBag = serviceBag
 _G.BinderProvider = AttacksBinders
 
 setupCollisionGroups()
+
+---== Remotes ==---
+local remotes = ReplicatedStorage.RemoteEvents
+local setNitroEnabledRemote = remotes.SetNitroEnabled
+local BinderProviderInitialized = serviceBag:GetService(AttacksBinders)
+
+local carBinder = BinderProviderInitialized:Get("Car")
+
+-- TODO GET THE CAR TO SET THE NITRO
+setNitroEnabledRemote.OnServerEvent:Connect(function(player: Player, car: Model, isNitro: boolean)
+	local binder = carBinder:Get(car)
+	binder:OnSetNitroEnabledEvent(player, isNitro)
+end)
