@@ -1,17 +1,16 @@
-local car = script.Parent.Parent.Parent.Parent
-local chassis = car.Chassis
-
-local wheels = {
-	car.Wheels.WheelFR.Wheel,
-	car.Wheels.WheelFL.Wheel,
-	car.Wheels.WheelRR.Wheel,
-	car.Wheels.WheelRL.Wheel,
-}
-
 -- Calculate the average amount of slippage of the car's wheels. This will be used to adjust
 -- the volume of tire skidding sounds as the car drives.
-local function getAverageWheelSlip(): number
+local function getAverageWheelSlip(car): number
 	local totalWheelSlip = 0
+
+	local chassis = car.Chassis
+
+	local wheels = {
+		car.Wheels.WheelFR.Wheel,
+		car.Wheels.WheelFL.Wheel,
+		car.Wheels.WheelRR.Wheel,
+		car.Wheels.WheelRL.Wheel,
+	}
 
 	local upVector = chassis.CFrame.UpVector
 
