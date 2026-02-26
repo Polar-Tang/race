@@ -1,45 +1,13 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Maid = require(ReplicatedStorage.Nevermore.Quenty.loader.Maid)
+local ClientTypes = require(script.Parent.Parent.utils.ClientTypes)
+export type ControllConstructor = ClientTypes.ControllConstructor
 
-export type ControllConstructor = {
-	car: Model,
-}
+export type baseData = ClientTypes.baseData
 
-export type baseData = {
-	_maid: Maid.Maid,
-	car: Model,
-	chassis: BasePart,
-	inputs: Configuration,
-	driverSeat: Seat,
-	engine: Folder,
-}
+export type ControllerBase = ClientTypes.ControllerBase
 
-export type ControllerBase = baseData & {
-	-- ===== Attack-specific state =====
-
-	-- ===== Overridden / new methods =====
-	new: (constructor: ControllConstructor) -> { self: ControllerBase },
-	Destroy: () -> (),
-	Start: (ControllerBase) -> (),
-}
-
----== FX ==---
-export type FX = baseData & {
-	_totalSpeedChange: number,
-	_lastSpeed: number,
-	_lastCollisionUpdate: number,
-
-	-- ===== Overridden / new methods =====
-	new: (ControllConstructor) -> (),
-	Init: (FX) -> (),
-
-	_onFXChanged: (FX) -> (),
-	_onNitroEnabledChanged: (FX) -> (),
-	_onHeartbeat: (FX, _deltaTime: number) -> (),
-}
 
 ---== Audio ==---
-export type Audio = baseData & {
+export type Audio = ControllerBase & {
 	_audioPlayers: Folder,
 	_engineStartup: AudioPlayer,
 	_engineShutdown: AudioPlayer,
@@ -73,4 +41,55 @@ export type Audio = baseData & {
 	ShutdownEngine: (self: Audio) -> (),
 	PlayCollisionSound: (self: Audio, volume: number) -> (),
 }
+
+---== Haptics ==---
+export type Haptics = ControllerBase & {
+	_enabled: boolean,
+
+	_hapticEffects: Folder,
+	_collisionHaptic: HapticEffect,
+	_nitroHaptic: HapticEffect,
+
+	PlayCollisionHaptic: (self: Haptics, strength: number) -> (),
+	StartNitro: (self: Haptics) -> (),
+	StopNitro: (self: Haptics) -> (),
+	InitCustomHapticEffect: (hapticEffect: HapticEffect) -> (),
+	Enable: (self: Haptics) -> (),
+	Disable: (self: Haptics) -> (),
+	Init: (self: Haptics) -> (),
+}
+
+---== Particles ==---
+export type Particles = ControllerBase & {
+	_nitroEnabled: boolean,
+
+	_rightNitroEmitterAttachment: Attachment,
+	_leftNitroEmitterAttachment: Attachment,
+
+	StartNitro: (Particles) -> (),
+	StopNitro: (Particles) -> (),
+}
+
+export type FXControllers = {
+	Audio : Audio,
+	Haptics : Haptics,
+	Particles: Particles,
+}
+
+---== FX ==---
+export type FX = ClientTypes.BaseService<FXControllers> & {
+	_totalSpeedChange: number,
+	_lastSpeed: number,
+	_lastCollisionUpdate: number,
+
+	-- ===== Overridden / new methods =====
+	new: (ControllConstructor) -> (),
+	Init: (FX) -> (),
+
+	_onFXChanged: (FX) -> (),
+	_onNitroEnabledChanged: (FX) -> (),
+	_onHeartbeat: (FX, _deltaTime: number) -> (),
+}
+
+
 return {}

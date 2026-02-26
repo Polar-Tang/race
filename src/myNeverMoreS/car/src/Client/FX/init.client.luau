@@ -5,56 +5,57 @@ local RunService = game:GetService("RunService")
 local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllerBaseClient)
 local ControllersTypeClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllersTypeClient)
+local BaseService = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.utils.BaseService)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
-local Audio = require(script.Audio)
-local Particles = require(script.Particles)
-local Haptics = require(script.Haptics)
 
 local COLLISION_UPDATE_INTERVAL = 0.1 -- Time interval to calculate average change over
 local COLLISION_THRESHOLD = 400 -- Amount of average change that must be passed to play a collision sound
 local COLLISION_VOLUME_FACTOR = 1 / 800 -- Amount to adjust volume based on the average change
 
+type FX = ControllersTypeClient.FX
 local FX = setmetatable({}, ControllerBaseClient)
 FX.__index = FX
 FX.ClassName = "FX"
 
 function FX.new(config: ControllersTypeClient.ControllConstructor)
-	local self = setmetatable(ControllerBaseClient.new(config), FX) :: ControllersTypeClient.ControllerBase
+	local self = setmetatable(BaseService.new(config) :: any, FX) :: FX
 
 	self._totalSpeedChange = 0
 	self._lastSpeed = self.chassis.AssemblyLinearVelocity.Magnitude
 	self._lastCollisionUpdate = os.clock()
 
+	self:_initControllers(script.Parent.Controllers)
+
 	return self
 end
 
-function FX._onFXChanged(self: ControllersTypeClient.FX)
+function FX._onFXChanged(self: FX)
 	if self.driverSeat.Occupant then
-		Audio.startupEngine()
+		self._controllers["Audio"]:StartupEngine()
 		local driver = Players:GetPlayerFromCharacter(self.driverSeat.Occupant.Parent)
 		if driver == Players.LocalPlayer then
-			Haptics.enable()
+			self._controllers["Haptics"]:Enable()
 		end
 	else
-		Audio.shutdownEngine()
-		Haptics.disable()
+		self._controllers["Audio"]:ShutdownEngine()
+		self._controllers["Haptics"]:Disable()
 	end
 end
 
-function FX._onNitroEnabledChanged(self: ControllersTypeClient.FX)
+function FX._onNitroEnabledChanged(self: FX)
 	local isNitroEnabled = self.engine:GetAttribute(CarConstants.NITRO_ENABLED_ATTRIBUTE)
 	if isNitroEnabled then
-		Audio.startNitro()
-		Particles.startNitro()
-		Haptics.startNitro()
+		self._controllers["Audio"]:StartNitro()
+		self._controllers["Particles"]:StartNitro()
+		self._controllers["Haptics"]:StartNitro()
 	else
-		Audio.stopNitro()
-		Particles.stopNitro()
-		Haptics.stopNitro()
+		self._controllers["Audio"]:StopNitro()
+		self._controllers["Particles"]:StopNitro()
+		self._controllers["Haptics"]:StopNitro()
 	end
 end
 
-function FX._onHeartbeat(self: ControllersTypeClient.FX, _deltaTime: number)
+function FX._onHeartbeat(self: FX, _deltaTime: number)
 	-- Play collision effects when the speed of the car changes abruptly.
 	-- This is more consistent than listening to .Touched,
 
@@ -75,14 +76,14 @@ function FX._onHeartbeat(self: ControllersTypeClient.FX, _deltaTime: number)
 	if averageChangeOverInterval > COLLISION_THRESHOLD then
 		-- If the change is higher than the threshold, play collision effects
 		local strength = averageChangeOverInterval * COLLISION_VOLUME_FACTOR
-		Audio.playCollisionSound(strength)
-		Haptics.playCollisionHaptic(strength)
+		self._controllers["Audio"]:PlayCollisionSound(strength)
+		self._controllers["Haptics"]:PlayCollisionHaptic(strength)
 	end
 
 	self._totalSpeedChange = 0
 end
 
-function FX.Init(self: ControllersTypeClient.FX)
+function FX.Init(self: FX)
 	self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function(...)
 		self:_onFXChanged(...)
 	end)
