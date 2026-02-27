@@ -142,7 +142,7 @@ function TouchInput._updateScale(self: ControllersTypeClient.TouchInput)
 	gui.UIScale.Scale = if isSmallScreen then CarConstants.UI_SMALL_SCREEN_SCALE else 1
 end
 
-function TouchInput._getThrottleAndSteering(self: ControllersTypeClient.TouchInput): (number, number)
+function TouchInput.GetThrottleAndSteering(self: ControllersTypeClient.TouchInput): (number, number)
 	local throttle = self._throttleAmount - self._brakeAmount
 	local steering = 0
 	local gui = self._gui

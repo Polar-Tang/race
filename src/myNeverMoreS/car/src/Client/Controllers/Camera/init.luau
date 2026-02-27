@@ -24,18 +24,19 @@ function CameraClass.new(config: ControllersTypeClient.ControllConstructor): Con
 	self._cycleCameraModeConnection = nil
 	self._currentCameraModeIndex = 1
 	self._enabled = false
-
-	
-
+	self._cameraModules = {}
+	for name, module in CameraModules do
+		self._cameraModules[name] = module.new(config)
+	end
 	return self
 end
 
 -- Set the current mode and enable/disable the correct CameraModules
 function CameraClass.SetMode(self: ControllersTypeClient.CameraClass,modeIndex: number)
 	self._currentCameraModeIndex = modeIndex
-	self._cameraMode = CameraModes(self.car)
+	self._cameraMode = CameraModes(self.chassis)
 	self._currentModeInfo = self._cameraMode[self._currentCameraModeIndex]
-	for name, module in CameraModules do
+	for name, module in self._cameraModules do
 		if name == self._currentModeInfo.module then
 			-- Enable the CameraModule and set parameters for the current mode
 			module:SetParameters(self._currentModeInfo.parameters)
@@ -67,7 +68,7 @@ function CameraClass.Enable(self: ControllersTypeClient.CameraClass)
 
 	self._enabled = true
 
-	self._cycleCameraModeConnection = cycleCameraModeEvent.Event:Connect(function()
+	self._cycleCameraModeConnection = cycleCameraModeEvent.OnClientEvent:Connect(function()
 		self:CycleCameraMode()
 	end)
 
@@ -92,7 +93,7 @@ function CameraClass.Disable(self: ControllersTypeClient.CameraClass)
 	camera.CameraType = Enum.CameraType.Custom
 
 	-- Disable all CameraModules
-	for _, module in CameraModules do
+	for _, module in self._cameraModules do
 		module:Disable()
 	end
 end

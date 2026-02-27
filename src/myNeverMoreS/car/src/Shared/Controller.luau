@@ -223,43 +223,34 @@ function DriveController.initialize(self: ControllersTypeClient.DriverController
 	-- Parameters aren't going to change very often so there's no reason to call :GetAttribute() constantly.
 	for parameter in engineParameters do
 		self.engine:GetAttributeChangedSignal(parameter):Connect(function()
-			local newAtt = self.steering:GetAttribute(parameter)
-			if checkAtt(newAtt) then
-				self._engineParameters[parameter] = newAtt
-			end
-		end)
-		local newAtt = self.steering:GetAttribute(parameter)
-		if checkAtt(newAtt) then
+			local newAtt = self.engine:GetAttribute(parameter)
 			self._engineParameters[parameter] = newAtt
-		end
+		end)
+		local newAtt = self.engine:GetAttribute(parameter)
+		self._engineParameters[parameter] = newAtt
+		print("self._engineParameters[parameter] ", self._engineParameters[parameter])
+		print("parameter ", parameter)
+
 	end
 
 	for parameter in steeringParameters do
 		self._maid:GiveTask(self.steering:GetAttributeChangedSignal(parameter):Connect(function()
 			local newAtt = self.steering:GetAttribute(parameter)
-			if checkAtt(newAtt) then
-				self._steeringParameters[parameter] = newAtt
-			end
+			self._steeringParameters[parameter] = newAtt
 		end))
 		self._maid:GiveTask(self.steering:GetAttributeChangedSignal(parameter):Connect(function()
 			local wheelAtt = self.steering:GetAttribute(parameter)
-			if wheelAtt and typeof(wheelAtt) == "number" then
-				self._steeringParameters[parameter] = wheelAtt
-			end
+			self._steeringParameters[parameter] = wheelAtt
 		end))
 	end
 
 	for parameter in wheelParameters do
 		self._maid:GiveTask(self.wheels:GetAttributeChangedSignal(parameter):Connect(function()
-			local newAtt = self.steering:GetAttribute(parameter)
-			if checkAtt(newAtt) then
-				self._wheelParameters[parameter] = newAtt
-			end
-		end))
-		local newAtt = self.steering:GetAttribute(parameter)
-		if checkAtt(newAtt) then
+			local newAtt = self.wheels:GetAttribute(parameter)
 			self._wheelParameters[parameter] = newAtt
-		end
+		end))
+		local newAtt = self.wheels:GetAttribute(parameter)
+		self._wheelParameters[parameter] = newAtt
 	end
 end
 
@@ -297,6 +288,5 @@ function DriveController.update(self: ControllersTypeClient.DriverController, de
 	self:updateSteering()
 	self:updateWheelFriction()
 end
-
 
 return DriveController

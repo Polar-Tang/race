@@ -109,7 +109,9 @@ export type CameraClass = ControllerBase & {
 	_cycleCameraModeConnection: RBXScriptConnection?,
 	_currentCameraModeIndex: number,
 	_enabled: boolean,
-
+	
+	_cameraModules: any, -- The camera modules that i don't want to type
+	
 	_currentModeInfo: any,
 	_cameraMode: any,
 
@@ -199,7 +201,7 @@ export type TouchInput = ClientTypes.ControllerBase & {
 	_onExitButtonInputBegan: (self: TouchInput, inputObject: InputObject) -> (),
 	_onCycleCameraModeButtonInputBegan: (self: TouchInput, inputObject: InputObject) -> (),
 	_updateScale: (self: TouchInput) -> (),
-	_getThrottleAndSteering: (self: TouchInput) -> (number, number),
+	GetThrottleAndSteering: (self: TouchInput) -> (number, number),
 	Enable: (self: TouchInput) -> (number, number),
 	Disable: (self: TouchInput) -> (number, number),
 }
@@ -237,6 +239,7 @@ export type ClassInput = ClientTypes.ControllerBase & {
 	_onLastInputCategoryChanged: (self: ClassInput, string) -> (),
 	_update: (self: ClassInput) -> (),
 	Enable: (self: ClassInput) -> (),
+	Disable: (self: ClassInput) -> (),
 }
 
 ---== DRIVER CLIENT ==---

@@ -46,7 +46,7 @@ function ClassInput._update(self: ControllersTypeClient.ClassInput)
 		return
 	end
 
-	local throttle, steering = inputModule:getThrottleAndSteering()
+	local throttle, steering = inputModule:GetThrottleAndSteering()
 	self.inputs:SetAttribute(CarConstants.THROTTLE_INPUT_ATTRIBUTE, throttle)
 	self.inputs:SetAttribute(CarConstants.STEERING_INPUT_ATTRIBUTE, steering)
 end

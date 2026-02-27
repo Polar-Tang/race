@@ -107,7 +107,7 @@ function CarClient.StartControlling(self: ControllersTypeClient.CarClient)
 
 	-- Enable the client modules
 	self._controllers["CameraClass"]:Enable()
-	self._controllers["InputClass"]:Enable()
+	self._controllers["ClassInput"]:Enable()
 	self._controllers["Speedometer"]:Enable()
 end
 
@@ -120,7 +120,7 @@ function CarClient.StopControlling(self: ControllersTypeClient.CarClient)
 
 	-- Disable the client modules
 	self._controllers["CameraClass"]:Disable()
-	self._controllers["InputClass"]:Disable()
+	self._controllers["ClassInput"]:Disable()
 	self._controllers["Speedometer"]:Disable()
 
 	-- Disconnect event connections
