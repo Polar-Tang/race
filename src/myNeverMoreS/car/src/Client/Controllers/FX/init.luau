@@ -2,9 +2,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllerBaseClient)
-local ControllersTypeClient =
-	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllersTypeClient)
+local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local BaseService = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.utils.BaseService)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 

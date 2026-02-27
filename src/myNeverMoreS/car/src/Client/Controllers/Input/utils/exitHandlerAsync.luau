@@ -1,9 +1,6 @@
 local Players = game:GetService("Players")
 
 local player = Players.LocalPlayer
-local car = script.Parent.Parent.Parent.Parent
-local chassis = car.Chassis
-local exitLocationAttachment = chassis.ExitLocationAttachment
 
 local function getSeatWeld(character: Model): Weld?
 	local primaryPart = character.PrimaryPart
@@ -19,7 +16,7 @@ local function getSeatWeld(character: Model): Weld?
 	return nil
 end
 
-local function exitHandlerAsync(_, inputState: Enum.UserInputState)
+local function exitHandlerAsync(inputState: Enum.UserInputState, chassis: BasePart)
 	if inputState == Enum.UserInputState.Begin then
 		local character = player.Character
 		if not character then
@@ -40,7 +37,8 @@ local function exitHandlerAsync(_, inputState: Enum.UserInputState)
 				seatWeld.AncestryChanged:Wait()
 			until not seatWeld:IsDescendantOf(game)
 		end
-
+		
+		local exitLocationAttachment = chassis.ExitLocationAttachment
 		-- Move the character outside the car
 		-- This is deferred to avoid a race condition with the physics system when SignalBehavior is not already deferred
 		task.defer(function()

@@ -14,6 +14,8 @@ local dragging = false
 local mouseMovement = Vector2.zero
 local panMovement = Vector2.zero
 
+-- TODO: figura out what whappen to all of this variables in mmo
+print("figura out what whappen to all of this variables in mmo")
 local function resetInput()
 	mouseMovement = Vector2.zero
 	panMovement = Vector2.zero

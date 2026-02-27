@@ -3,6 +3,10 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 local cycleCameraModeHandler = require(script.Parent.utils.cycleCameraModeHandler)
 local exitHandlerAsync = require(script.Parent.utils.exitHandlerAsync)
@@ -13,8 +17,6 @@ local getStringForKeyCode = require(script.Parent.utils.getStringForKeyCode)
 local player = Players.LocalPlayer
 local playerGui = player.PlayerGui
 local controlsGuiTemplate = script.Parent.ControlsGui
-local car = script.Parent.Parent.Parent.Parent
-local inputs = car.Inputs
 
 local FORWARD_KEY = Enum.KeyCode.W
 local BACKWARD_KEY = Enum.KeyCode.S
@@ -25,12 +27,22 @@ local BACKWARD_KEY_ALT = Enum.KeyCode.Down
 local RIGHT_KEY_ALT = Enum.KeyCode.Right
 local LEFT_KEY_ALT = Enum.KeyCode.Left
 
-local enabled = false
-local controlsGui = nil
+local KeyboardAndMouse = setmetatable({}, ControllerBaseClient)
+KeyboardAndMouse.__index = KeyboardAndMouse
+KeyboardAndMouse.ClassName = "KeyboardAndMouse"
 
-local KeyboardAndMouse = {}
+function KeyboardAndMouse.new(config: ControllersTypeClient.ControllConstructor): ControllersTypeClient.KeyboardAndMouse
+	local self = setmetatable(ControllerBaseClient.new(config), KeyboardAndMouse)
 
-function KeyboardAndMouse:getThrottleAndSteering(): (number, number)
+	self._currentGamepad = Enum.UserInputType.Gamepad1
+	self._enabled = false
+	self._lastInputTypeChangedConnection = nil
+	self._controlsGui = nil
+
+	return self
+end
+
+function KeyboardAndMouse.GetThrottleAndSteering(self: ControllersTypeClient.KeyboardAndMouse): (number, number)
 	local throttle = 0
 	local steering = 0
 
@@ -50,19 +62,18 @@ function KeyboardAndMouse:getThrottleAndSteering(): (number, number)
 	return throttle, steering
 end
 
-function KeyboardAndMouse:enable()
-	if enabled then
+function KeyboardAndMouse.Enable(self: ControllersTypeClient.KeyboardAndMouse)
+	if self._enabled then
 		return
 	end
-	enabled = true
+	self._enabled = true
 
-	local cycleCameraModeKeyCode = inputs:GetAttribute(CarConstants.KEYBOARD_CYCLE_CAMERA_MODE_KEY_CODE_ATTRIBUTE)
-	local exitKeyCode = inputs:GetAttribute(CarConstants.KEYBOARD_EXIT_KEY_CODE_ATTRIBUTE)
-	local nitroKeyCode = inputs:GetAttribute(CarConstants.KEYBOARD_NITRO_KEY_CODE_ATTRIBUTE)
-	local handBrakeKeyCode = inputs:GetAttribute(CarConstants.KEYBOARD_HAND_BRAKE_KEY_CODE_ATTRIBUTE)
+	local cycleCameraModeKeyCode = self.inputs:GetAttribute(CarConstants.KEYBOARD_CYCLE_CAMERA_MODE_KEY_CODE_ATTRIBUTE)
+	local exitKeyCode = self.inputs:GetAttribute(CarConstants.KEYBOARD_EXIT_KEY_CODE_ATTRIBUTE)
+	local nitroKeyCode = self.inputs:GetAttribute(CarConstants.KEYBOARD_NITRO_KEY_CODE_ATTRIBUTE)
+	local handBrakeKeyCode = self.inputs:GetAttribute(CarConstants.KEYBOARD_HAND_BRAKE_KEY_CODE_ATTRIBUTE)
 
-	controlsGui = controlsGuiTemplate:Clone()
-	controlsGui.Parent = playerGui
+	local controlsGui = controlsGuiTemplate:Clone()
 
 	-- Get the strings to display for each of the keycodes
 	local cycleCameraModeString = getStringForKeyCode(cycleCameraModeKeyCode)
@@ -86,30 +97,55 @@ function KeyboardAndMouse:enable()
 		false,
 		cycleCameraModeKeyCode
 	)
-	ContextActionService:BindAction(CarConstants.KEYBOARD_EXIT_BIND_NAME, exitHandlerAsync, false, exitKeyCode)
-	ContextActionService:BindAction(CarConstants.KEYBOARD_NITRO_BIND_NAME, nitroHandler, false, nitroKeyCode)
+	ContextActionService:BindAction(
+		CarConstants.KEYBOARD_EXIT_BIND_NAME,
+		function(
+			actionName: string,
+			inputState: Enum.UserInputState,
+			inputObject: InputObject
+		): Enum.ContextActionResult?
+			return exitHandlerAsync(inputState, self.chassis)
+		end,
+		false,
+		exitKeyCode
+	)
+	ContextActionService:BindAction(CarConstants.KEYBOARD_NITRO_BIND_NAME, function(
+			actionName: string,
+			inputState: Enum.UserInputState,
+			inputObject: InputObject
+		): Enum.ContextActionResult?
+			return nitroHandler(inputState, self.inputs)
+		end, false, nitroKeyCode)
 	ContextActionService:BindAction(
 		CarConstants.KEYBOARD_HAND_BRAKE_BIND_NAME,
-		handBrakeHandler,
+		function(
+			actionName: string,
+			inputState: Enum.UserInputState,
+			inputObject: InputObject
+		): Enum.ContextActionResult?
+			return handBrakeHandler(inputState, self.inputs)
+		end,
 		false,
 		handBrakeKeyCode
 	)
+	controlsGui.Parent = playerGui
+	self._controlsGui = controlsGui
 end
 
-function KeyboardAndMouse:disable()
-	if not enabled then
+function KeyboardAndMouse.Disable(self: ControllersTypeClient.KeyboardAndMouse)
+	if not self._enabled then
 		return
 	end
-	enabled = false
+	self._enabled = false
 
 	ContextActionService:UnbindAction(CarConstants.KEYBOARD_CYCLE_CAMERA_MODE_BIND_NAME)
 	ContextActionService:UnbindAction(CarConstants.KEYBOARD_EXIT_BIND_NAME)
 	ContextActionService:UnbindAction(CarConstants.KEYBOARD_NITRO_BIND_NAME)
 	ContextActionService:UnbindAction(CarConstants.KEYBOARD_HAND_BRAKE_BIND_NAME)
 
-	if controlsGui then
-		controlsGui:Destroy()
-		controlsGui = nil
+	if self._controlsGui then
+		self._controlsGui:Destroy()
+		self._controlsGui = nil
 	end
 end
 

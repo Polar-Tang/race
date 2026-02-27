@@ -2,9 +2,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllerBaseClient)
-local ControllersTypeClient =
-	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllersTypeClient)
+local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 local getAverageWheelSlip = require(script.Parent.Parent.utils.getAverageWheelSlip)
 local getSuspensionLength = require(script.Parent.Parent.utils.getSuspensionLength)
@@ -170,11 +169,9 @@ function Audio.Init(self: ControllersTypeClient.Audio)
 	self._tiresLoop:Play()
 	self._tiresSlidingLoop:Play()
 
-	RunService.Heartbeat:Connect(function(a0: number)
+	self._maid:GiveTask(RunService.Heartbeat:Connect(function(a0: number)
 		self:_onHeartbeat(a0)
-	end)
+	end))
 end
-
-Audio.initialize()
 
 return Audio

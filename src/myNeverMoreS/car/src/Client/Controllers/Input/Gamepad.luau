@@ -3,6 +3,11 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 local cycleCameraModeHandler = require(script.Parent.utils.cycleCameraModeHandler)
 local exitHandlerAsync = require(script.Parent.utils.exitHandlerAsync)
@@ -12,18 +17,11 @@ local handBrakeHandler = require(script.Parent.utils.handBrakeHandler)
 local player = Players.LocalPlayer
 local playerGui = player.PlayerGui
 local controlsGuiTemplate = script.Parent.ControlsGui
-local car = script.Parent.Parent.Parent.Parent
-local inputs = car.Inputs
 
 local LEFT_THUMBSTICK = Enum.KeyCode.Thumbstick1
 local RIGHT_TRIGGER = Enum.KeyCode.ButtonR2
 local LEFT_TRIGGER = Enum.KeyCode.ButtonL2
 local STEERING_DEADZONE = 0.1
-
-local currentGamepad = Enum.UserInputType.Gamepad1
-local enabled = false
-local lastInputTypeChangedConnection = nil
-local controlsGui = nil
 
 local function onLastInputTypeChanged(inputType: Enum.UserInputType)
 	if string.find(inputType.Name, "Gamepad") then
@@ -31,9 +29,22 @@ local function onLastInputTypeChanged(inputType: Enum.UserInputType)
 	end
 end
 
-local Gamepad = {}
+local Gamepad = setmetatable({}, ControllerBaseClient)
+Gamepad.__index = Gamepad
+Gamepad.ClassName = "Gamepad"
 
-function Gamepad:getThrottleAndSteering(): (number, number)
+function Gamepad.new(config: ControllersTypeClient.ControllConstructor): ControllersTypeClient.Gamepad
+	local self = setmetatable(ControllerBaseClient.new(config), Gamepad)
+
+	self._currentGamepad = Enum.UserInputType.Gamepad1
+	self._enabled = false
+	self._lastInputTypeChangedConnection = nil
+	self._controlsGui = nil
+
+	return self
+end
+
+function Gamepad.GetThrottleAndSteering(self: ControllersTypeClient.Gamepad): (number, number)
 	local throttle = 0
 	local steering = 0
 	local gamepadState = UserInputService:GetGamepadState(currentGamepad)
@@ -55,18 +66,18 @@ function Gamepad:getThrottleAndSteering(): (number, number)
 	return throttle, steering
 end
 
-function Gamepad:enable()
-	if enabled then
+function Gamepad.Enable(self: ControllersTypeClient.Gamepad)
+	if self._enabled then
 		return
 	end
-	enabled = true
+	self._enabled = true
 
-	local cycleCameraModeKeyCode = inputs:GetAttribute(CarConstants.GAMEPAD_CYCLE_CAMERA_MODE_KEY_CODE_ATTRIBUTE)
-	local exitKeyCode = inputs:GetAttribute(CarConstants.GAMEPAD_EXIT_KEY_CODE_ATTRIBUTE)
-	local nitroKeyCode = inputs:GetAttribute(CarConstants.GAMEPAD_NITRO_KEY_CODE_ATTRIBUTE)
-	local handBrakeKeyCode = inputs:GetAttribute(CarConstants.GAMEPAD_HAND_BRAKE_KEY_CODE_ATTRIBUTE)
+	local cycleCameraModeKeyCode = self.inputs:GetAttribute(CarConstants.GAMEPAD_CYCLE_CAMERA_MODE_KEY_CODE_ATTRIBUTE)
+	local exitKeyCode = self.inputs:GetAttribute(CarConstants.GAMEPAD_EXIT_KEY_CODE_ATTRIBUTE)
+	local nitroKeyCode = self.inputs:GetAttribute(CarConstants.GAMEPAD_NITRO_KEY_CODE_ATTRIBUTE)
+	local handBrakeKeyCode = self.inputs:GetAttribute(CarConstants.GAMEPAD_HAND_BRAKE_KEY_CODE_ATTRIBUTE)
 
-	controlsGui = controlsGuiTemplate:Clone()
+	local controlsGui = controlsGuiTemplate:Clone()
 	controlsGui.Parent = playerGui
 
 	-- Get the gamepad button images to display on the controls UI. UserInputService:GetImageForKeycode() returns
@@ -86,48 +97,78 @@ function Gamepad:enable()
 	controlsGui.Controls.NitroFrame.GamepadLabel.Visible = true
 	controlsGui.Controls.HandBrakeFrame.GamepadLabel.Visible = true
 
+	self._controlsGui = controlsGui
+
 	ContextActionService:BindAction(
 		CarConstants.GAMEPAD_CYCLE_CAMERA_MODE_BIND_NAME,
 		cycleCameraModeHandler,
 		false,
 		cycleCameraModeKeyCode
 	)
-	ContextActionService:BindAction(CarConstants.GAMEPAD_EXIT_BIND_NAME, exitHandlerAsync, false, exitKeyCode)
-	ContextActionService:BindAction(CarConstants.GAMEPAD_NITRO_BIND_NAME, nitroHandler, false, nitroKeyCode)
+	ContextActionService:BindAction(
+		CarConstants.GAMEPAD_EXIT_BIND_NAME,
+		function(
+			actionName: string,
+			inputState: Enum.UserInputState,
+			inputObject: InputObject
+		): Enum.ContextActionResult?
+			return exitHandlerAsync(inputState, self.chassis)
+		end,
+		false,
+		exitKeyCode
+	)
+	ContextActionService:BindAction(
+		CarConstants.GAMEPAD_NITRO_BIND_NAME,
+		function(
+			actionName: string,
+			inputState: Enum.UserInputState,
+			inputObject: InputObject
+		): Enum.ContextActionResult?
+			return nitroHandler(inputState, self.inputs)
+		end,
+		false,
+		nitroKeyCode
+	)
 	ContextActionService:BindAction(
 		CarConstants.GAMEPAD_HAND_BRAKE_BIND_NAME,
-		handBrakeHandler,
+		function(
+			actionName: string,
+			inputState: Enum.UserInputState,
+			inputObject: InputObject
+		): Enum.ContextActionResult?
+			return handBrakeHandler(inputState, self.inputs)
+		end,
 		false,
 		handBrakeKeyCode
 	)
 
 	-- We listen to LastInputTypeChanged so we can specifically check which was the last gamepad being used.
 	-- Simply calling GetLastInputType in getThrottleAndSteering would potentially return non-gamepad InputTypes.
-	lastInputTypeChangedConnection = UserInputService.LastInputTypeChanged:Connect(onLastInputTypeChanged)
+	self._lastInputTypeChangedConnection = UserInputService.LastInputTypeChanged:Connect(onLastInputTypeChanged)
 
 	local lastInputType = UserInputService:GetLastInputType()
 	onLastInputTypeChanged(lastInputType)
 end
 
-function Gamepad:disable()
-	if not enabled then
+function Gamepad.Disable(self: ControllersTypeClient.Gamepad)
+	if not self._enabled then
 		return
 	end
-	enabled = false
+	self._enabled = false
 
 	ContextActionService:UnbindAction(CarConstants.GAMEPAD_CYCLE_CAMERA_MODE_BIND_NAME)
 	ContextActionService:UnbindAction(CarConstants.GAMEPAD_EXIT_BIND_NAME)
 	ContextActionService:UnbindAction(CarConstants.GAMEPAD_NITRO_BIND_NAME)
 	ContextActionService:UnbindAction(CarConstants.GAMEPAD_HAND_BRAKE_BIND_NAME)
 
-	if lastInputTypeChangedConnection then
-		lastInputTypeChangedConnection:Disconnect()
-		lastInputTypeChangedConnection = nil
+	if self._lastInputTypeChangedConnection then
+		self._lastInputTypeChangedConnection:Disconnect()
+		self._lastInputTypeChangedConnection = nil
 	end
 
-	if controlsGui then
-		controlsGui:Destroy()
-		controlsGui = nil
+	if self._controlsGui then
+		self._controlsGui:Destroy()
+		self._controlsGui = nil
 	end
 end
 

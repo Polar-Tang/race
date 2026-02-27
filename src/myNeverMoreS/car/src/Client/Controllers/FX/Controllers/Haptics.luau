@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllerBaseClient)
-local ControllersTypeClient =
-	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllersTypeClient)
+local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 
 local COLLISION_STRENGTH_FACTOR = 1 / 800 -- Amount to adjust haptic strength based on the average change
 
@@ -15,14 +14,14 @@ function Haptics.new(config: ControllersTypeClient.ControllConstructor)
 	self._hapticEffects = self.chassis.Haptic
 	self._collisionHaptic = self._hapticEffects.CollisionHaptic
 	self._nitroHaptic = self._hapticEffects.NitroHaptic
-	self.enabled = false
+	self._enabled = false
 	
 
 	return self
 end
 
 function Haptics.PlayCollisionHaptic(self: ControllersTypeClient.Haptics, strength: number)
-	if not Haptics.enabled then
+	if not self._enabled then
 		return
 	end
 	local hapticStr = math.clamp(1 - strength * COLLISION_STRENGTH_FACTOR, 0.0, 1.0)
@@ -31,14 +30,14 @@ function Haptics.PlayCollisionHaptic(self: ControllersTypeClient.Haptics, streng
 end
 
 function Haptics.StartNitro(self: ControllersTypeClient.Haptics)
-	if not Haptics.enabled then
+	if not self._enabled then
 		return
 	end
 	self._nitroHaptic:Play()
 end
 
 function Haptics.StopNitro(self: ControllersTypeClient.Haptics)
-	if not Haptics.enabled then
+	if not self._enabled then
 		return
 	end
 	self._nitroHaptic:Stop()

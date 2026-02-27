@@ -1,8 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllerBaseClient)
+local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local ClientTypes = require(script.Parent.ClientTypes)
-local ControllersTypeClient =
-	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.Controllers.ControllersTypeClient)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 
 local BaseService = {}

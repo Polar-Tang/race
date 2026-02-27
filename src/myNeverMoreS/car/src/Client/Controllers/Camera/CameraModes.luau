@@ -1,7 +1,7 @@
-local car = script.Parent.Parent.Parent.Parent
-local chassis = car.Chassis
 
-local CameraModes = {
+function getCameraModes(chassis)
+	
+	local CameraModes = {
 	{
 		module = "ChaseCamera",
 		parameters = {
@@ -31,5 +31,8 @@ local CameraModes = {
 		},
 	},
 }
-
 return CameraModes
+end
+
+
+return getCameraModes
