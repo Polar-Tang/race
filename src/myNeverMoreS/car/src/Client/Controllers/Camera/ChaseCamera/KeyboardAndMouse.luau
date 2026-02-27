@@ -15,13 +15,13 @@ local mouseMovement = Vector2.zero
 local panMovement = Vector2.zero
 
 -- TODO: figura out what whappen to all of this variables in mmo
-print("figura out what whappen to all of this variables in mmo")
 local function resetInput()
 	mouseMovement = Vector2.zero
 	panMovement = Vector2.zero
 end
 
 local function onInputChanged(inputObject: InputObject)
+	print("figura out what whappen to all of this variables in mmo", dragging)
 	if inputObject.UserInputType == Enum.UserInputType.MouseMovement then
 		if dragging then
 			mouseMovement = Vector2.new(inputObject.Delta.X, inputObject.Delta.Y)
@@ -65,6 +65,7 @@ local KeyboardAndMouse = {}
 function KeyboardAndMouse:getInput(_deltaTime: number): Vector2
 	local inversionVector = Vector2.new(1, UserGameSettings:GetCameraYInvertValue())
 	local inputVector = mouseMovement * ROTATION_SPEED_MOUSE + panMovement * ROTATION_SPEED_POINTERACTION
+	print("figura out what whappen to all of this variables in mmo", inputVector)
 
 	-- getInput() is only expected to be called once per frame. The input values are reset
 	-- to prevent them from continuously rolling over into the next frame once they stop.
@@ -74,6 +75,7 @@ function KeyboardAndMouse:getInput(_deltaTime: number): Vector2
 end
 
 function KeyboardAndMouse:enable()
+	print("figura out what whappen to all of this variables in mmo", enabled)
 	if enabled then
 		return
 	end

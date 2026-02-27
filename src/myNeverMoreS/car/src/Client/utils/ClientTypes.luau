@@ -6,7 +6,7 @@ export type BaseService<TControllers>  = ControllerBase & {
 
 	-- ===== Overridden / new methods =====
 	new: (constructor: ControllConstructor) -> { self: ControllerBase },
-    _initControllers: (constructor: ControllConstructor, Folder) -> (),
+    _initControllers: (constructor: ControllConstructor, TControllers) -> (),
 	Destroy: () -> (),
 	Start: (ControllerBase) -> (),
 }

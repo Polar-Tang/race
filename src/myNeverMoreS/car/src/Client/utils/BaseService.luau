@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
 local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
 local ClientTypes = require(script.Parent.ClientTypes)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 
@@ -24,26 +25,23 @@ function BaseService.new(config: ClientTypes.ControllConstructor): BaseService
 	return self
 end
 
-function BaseService._initControllers(self, Controllers: Folder)
+function BaseService._initControllers(self, Controllers)
 	local controllers = {}
 	local controller_constructor: ClientTypes.ControllConstructor = {
-		car = self._obj,
+		car = self.car,
 	}
 
-	for _, file: Instance in ipairs(Controllers:GetDescendants()) do
-		if file:IsA("ModuleScript") then
-			local controllerFile: ControllersTypeClient.ControllerBase = require(file)
-			local controller = controllerFile.new(controller_constructor)
-			controllers[controller.ClassName] = controller
-			if controller.Init then
-				controller:Init()
-			end
-		end
+	for _, ctrller in pairs(Controllers) do
+		local new_controller = ctrller.new(controller_constructor)
+		controllers[new_controller.ClassName] = new_controller
+		-- TODO: Call controller init
 	end
+	
 	self._controllers = controllers
 end
 
 function BaseService.Start(self)
+	print("self._controllers ", self._controllers)
 	for _, controller: ControllersTypeClient.ControllerBase in pairs(self._controllers) do
 		controller:Start()
 	end

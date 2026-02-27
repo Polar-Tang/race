@@ -2,7 +2,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
 local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local BaseService = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.utils.BaseService)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
@@ -11,8 +10,14 @@ local COLLISION_UPDATE_INTERVAL = 0.1 -- Time interval to calculate average chan
 local COLLISION_THRESHOLD = 400 -- Amount of average change that must be passed to play a collision sound
 local COLLISION_VOLUME_FACTOR = 1 / 800 -- Amount to adjust volume based on the average change
 
+local Controllers = {
+	["Audio"] = require(script.Controllers.Audio),
+	["Haptics"] = require(script.Controllers.Haptics),
+	["Particles"] = require(script.Controllers.Particles),
+}
+
 type FX = ControllersTypeClient.FX
-local FX = setmetatable({}, ControllerBaseClient)
+local FX = setmetatable({}, BaseService)
 FX.__index = FX
 FX.ClassName = "FX"
 
@@ -23,7 +28,7 @@ function FX.new(config: ControllersTypeClient.ControllConstructor)
 	self._lastSpeed = self.chassis.AssemblyLinearVelocity.Magnitude
 	self._lastCollisionUpdate = os.clock()
 
-	self:_initControllers(script.Parent.Controllers)
+	self:_initControllers(Controllers)
 
 	return self
 end

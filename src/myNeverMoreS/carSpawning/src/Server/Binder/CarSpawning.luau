@@ -10,7 +10,7 @@ local randomColor = require(ReplicatedStorage.Nevermore.Custom.carSpawning.src.S
 
 local carTemplate = ReplicatedStorage.Car
 
-local spawnPromptTemplate = script.SpawnPrompt
+local spawnPromptTemplate = script.Parent.SpawnPrompt
 
 local KIOSK_TAG = "CarSpawnKiosk"
 
@@ -20,6 +20,7 @@ CarSpawning.__index = CarSpawning
 function CarSpawning.new(kiosk: Model)
 	local self = setmetatable(BaseObject.new(kiosk) :: any, CarSpawning)
 
+	self:_setupKiosk()
 	return self
 end
 
@@ -69,6 +70,7 @@ function CarSpawning._spawnCar(location: CFrame, owner: Player?)
 	if owner then
 		local ownerTag = getOwnerTag(owner)
 		car:AddTag(ownerTag)
+		car:AddTag("Car")
 		-- Since instance references can't be stored in attributes, the car owner is stored by UserId
 		car:SetAttribute(CarConstants.CAR_OWNER_ATTRIBUTE, owner.UserId)
 	end

@@ -47,9 +47,13 @@ function Replication.OnSetNitroEnabledEvent(self: ControllersTypes.Replication, 
 	self.engine:SetAttribute(CarConstants.NITRO_ENABLED_ATTRIBUTE, enabled)
 end
 
-function Replication.Init(self: ControllersTypes.Replication)
+function Replication.Start(self: ControllersTypes.Replication)
+	print()
+
 	local con = self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function(...)
 		self:_onOccupantChanged()
 	end)
 	self._maid:GiveTask(con)
 end
+
+return Replication

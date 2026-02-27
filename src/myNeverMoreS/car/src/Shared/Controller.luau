@@ -3,6 +3,7 @@ local ControllerBaseClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
 local ControllersTypeClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+local Table = require(ReplicatedStorage.Nevermore.Quenty.table.Shared.Table)
 local Constants = require(script.Parent.CarConstants)
 local Units = require(script.Parent.Units)
 local lerp = require(script.Parent.lerp)
@@ -43,18 +44,18 @@ DriveController.ClassName = "DriveController"
 function DriveController.new(config: ControllersTypeClient.ControllConstructor)
 	local self = setmetatable(ControllerBaseClient.new(config), DriveController) :: ControllersTypeClient.ControllerBase
 
-	self._car = script.Parent.Parent
-	self._chassis = self._car.Chassis
-	self._inputs = self._car.Inputs
-	self._engine = self._car.Engine
-	self._steering = self._car.Steering
-	self._wheels = self._car.Wheels
+	self.wheels = self.car.Wheels
+	self.steering = self.car.Steering
+
+	self._engineParameters = table.clone(engineParameters)
+	self._steeringParameters = table.clone(steeringParameters)
+	self._wheelParameters = table.clone(wheelParameters)
 
 	self._wheelParts = {
-		self._wheels.WheelFR.Wheel,
-		self._wheels.WheelFL.Wheel,
-		self._wheels.WheelRR.Wheel,
-		self._wheels.WheelRL.Wheel,
+		self.wheels.WheelFR.Wheel,
+		self.wheels.WheelFL.Wheel,
+		self.wheels.WheelRR.Wheel,
+		self.wheels.WheelRL.Wheel,
 	}
 	-- Calculate wheel radius based on the front right wheel
 	self._wheelRadius = self._wheelParts[1].Size.Y / 2

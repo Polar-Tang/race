@@ -1,4 +1,5 @@
 --||Services||--
+local CollectionService = game:GetService("CollectionService")
 local RS = game:GetService("ReplicatedStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
@@ -21,9 +22,11 @@ _G.FistBag = serviceBag
 ---------- BINDERS ----------
 local Binder = Nevermore("Binder")
 local Car = Nevermore("Car")
+local CarSpawning = Nevermore("CarSpawning")
 
 local Binders = {
 	["Car"] = Car,
+	["CarSpawnKiosk"] = CarSpawning
 }
 ---------- USE BINDER PORVIDER ----------
 local BinderProvider = Nevermore("BinderProvider")
@@ -51,8 +54,16 @@ local BinderProviderInitialized = serviceBag:GetService(AttacksBinders)
 
 local carBinder = BinderProviderInitialized:Get("Car")
 
+carBinder:GetClassAddedSignal():Connect(function(car)
+	car:Init()
+	car:Start()
+	print("Calling start")
+end)
+
+
 -- TODO GET THE CAR TO SET THE NITRO
 setNitroEnabledRemote.OnServerEvent:Connect(function(player: Player, car: Model, isNitro: boolean)
 	local binder = carBinder:Get(car)
 	binder:OnSetNitroEnabledEvent(player, isNitro)
 end)
+

@@ -14,6 +14,7 @@ function Occupant.new(config: ControllersTypes.ControllConstructor): Controllers
 	self._owner = nil
 	self._drivePrompt = self.chassis.DrivePromptAttachment.DrivePrompt
 
+	print("self ",self)
 	return self
 end
 
@@ -60,7 +61,9 @@ function Occupant.UpdateOwner(self: ControllersTypes.OccupantController)
 end
 
 function Occupant.Start(self: ControllersTypes.OccupantController)
-	self._maid:GiveTask(self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(self._onOccupantChanged))
+	self._maid:GiveTask(self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function()
+		self:_onOccupantChanged()
+	end))
 	self._maid:GiveTask(self._drivePrompt.Triggered:Connect(function(player: Player)
 		if self._owner then
 			if player ~= self._owner then
