@@ -9,8 +9,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
-local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local InputCategorizer = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.InputCategorizer)
 
 local InputModules = {
@@ -127,9 +129,8 @@ function ChaseCamera._update(self: ControllersTypeClient.ChaseCamera, deltaTime:
 	self._lookAhead = self._lookAhead:Lerp(newLookAhead, math.min(deltaTime * LOOK_AHEAD_SPEED, 1))
 
 	-- Update trailing offset
-	self._trailingOffset -= targetVector * deltaTime
-	self._trailingOffset = self._trailingOffset:Lerp(Vector3.zero, math.min(deltaTime * TRAILING_CATCHUP_SPEED, 1))
-
+	local trailingOffset = self._trailingOffset - (targetVector * deltaTime)
+	self._trailingOffset = trailingOffset:Lerp(Vector3.zero, math.min(deltaTime * TRAILING_CATCHUP_SPEED, 1))
 	-- Update virtual camera cframe
 	local cameraSpeed = if self._isManualControl then CAMERA_SPEED_MANUAL else CAMERA_SPEED_AUTOMATIC
 	local cameraPosition = self._trailingOffset

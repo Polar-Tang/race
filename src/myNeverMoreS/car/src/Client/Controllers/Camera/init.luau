@@ -6,13 +6,15 @@ local CameraModules = {
 	ChaseCamera = require(script.ChaseCamera),
 	InteriorCamera = require(script.InteriorCamera),
 	FixedCamera = require(script.FixedCamera),
-} 
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
-local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+}
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local CameraModes = require(script.CameraModes)
 
 local camera = Workspace.CurrentCamera
-local cycleCameraModeEvent = game.ReplicatedStorage.RemoteEvents.CycleCameraMode
+local cycleCameraModeEvent = script.CycleCameraMode
 
 local CameraClass = setmetatable({}, ControllerBaseClient)
 CameraClass.__index = CameraClass
@@ -32,7 +34,7 @@ function CameraClass.new(config: ControllersTypeClient.ControllConstructor): Con
 end
 
 -- Set the current mode and enable/disable the correct CameraModules
-function CameraClass.SetMode(self: ControllersTypeClient.CameraClass,modeIndex: number)
+function CameraClass.SetMode(self: ControllersTypeClient.CameraClass, modeIndex: number)
 	self._currentCameraModeIndex = modeIndex
 	self._cameraMode = CameraModes(self.chassis)
 	self._currentModeInfo = self._cameraMode[self._currentCameraModeIndex]
@@ -68,7 +70,7 @@ function CameraClass.Enable(self: ControllersTypeClient.CameraClass)
 
 	self._enabled = true
 
-	self._cycleCameraModeConnection = cycleCameraModeEvent.OnClientEvent:Connect(function()
+	self._cycleCameraModeConnection = cycleCameraModeEvent.Event:Connect(function()
 		self:CycleCameraMode()
 	end)
 

@@ -34,16 +34,60 @@ export type OccupantController = ControllerBase & {
 }
 
 ---== ConstraintUpdater ==---
+
+-- INIT SHIT --
+export type suspension = {
+	frontSuspensionLength: number,
+	frontSuspensionStiffness: number,
+	frontSuspensionDamping: number,
+	rearSuspensionLength: number,
+	rearSuspensionStiffness: number,
+	rearSuspensionDamping: number,
+	frontCamber: number,
+	rearCamber: number,
+}
+
+export type antiRoll = {
+	frontAntiRollBarDamping: number,
+	frontAntiRollBarStiffness: number,
+	rearAntiRollBarStiffness: number,
+	rearAntiRollBarDamping: number,
+}
+
+export type steering = {
+	steeringRackLength: number,
+	steeringRackResponsiveness: number,
+	steeringRackSpeed: number,
+	steeringRackMaxForce: number,
+}
+
+export type redress = {
+	redressMaxTorque: number,
+	redressResponsiveness: number,
+}
+
+export type CarConfig = {
+	suspension: suspension,
+	antiRoll: antiRoll,
+	steering: steering,
+	redress: redress,
+}
+
+export type parentType = "suspension" | "antiRoll" | "steering" | "redress"
+
 export type ConstraintUpdater = ControllerBase & {
 	_steering: Folder,
 	_suspension: Folder,
 	_antiRoll: Folder,
 	_redress: Folder,
+	config: CarConfig,
 
 	_updateSuspension: (ConstraintUpdater) -> (),
 	_updateAntiRoll: (ConstraintUpdater) -> (),
 	_updateRedress: (ConstraintUpdater) -> (),
 	_updateSteering: (ConstraintUpdater) -> (),
+	_ensureAtt: (self: ConstraintUpdater, attName: string, parent: parentType) -> number,
+	_initFolder: (self: ConstraintUpdater) -> (),
 }
 
 ---== Redresser ==---

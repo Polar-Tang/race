@@ -7,6 +7,7 @@ local Controllers = {
 	["ConstraintUpdater"] = require(script.Parent.Parent.Controllers.ConstraintUpdater),
 	["Redresser"] = require(script.Parent.Parent.Controllers.Redresser),
 	["Replication"] = require(script.Parent.Parent.Controllers.Replication),
+	["Controller"] = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.Controller),
 }
 
 local Car = {}
@@ -47,14 +48,15 @@ function Car._initControllers(self)
 		controllers[new_controller.ClassName] = new_controller
 		-- TODO: Call controller init
 	end
-	
+
 	self._controllers = controllers
 end
+
 function Car.OnSetNitroEnabledEvent(self, player, enable)
 	self._controllers["Replication"]:OnSetNitroEnabledEvent(player, enable)
 end
+
 function Car.Start(self)
-	print(self._controllers, "self._controllers")
 	for _, controller: ControllersTypes.ControllerBase in pairs(self._controllers) do
 		print(controller)
 		controller:Start()

@@ -1,6 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
-local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
 local ClientTypes = require(script.Parent.ClientTypes)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
@@ -18,10 +20,7 @@ export type BaseService = typeof(setmetatable(
 ))
 
 function BaseService.new(config: ClientTypes.ControllConstructor): BaseService
-	local self = setmetatable(
-		ControllerBaseClient.new(config) :: any,
-		BaseService
-	)
+	local self = setmetatable(ControllerBaseClient.new(config) :: any, BaseService)
 	return self
 end
 
@@ -35,8 +34,11 @@ function BaseService._initControllers(self, Controllers)
 		local new_controller = ctrller.new(controller_constructor)
 		controllers[new_controller.ClassName] = new_controller
 		-- TODO: Call controller init
+		if new_controller.Init then
+			new_controller:Init()
+		end
 	end
-	
+
 	self._controllers = controllers
 end
 

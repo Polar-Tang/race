@@ -2,9 +2,10 @@ local GuiService = game:GetService("GuiService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
-local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 local InputCategorizer = require(script.Parent.Parent.InputCategorizer)
@@ -25,13 +26,20 @@ function ClassInput.new(config: ControllersTypeClient.ControllConstructor): Cont
 	self._currentInputCategory = InputCategorizer.getLastInputCategory()
 	self._enabled = false
 
+	self._controllers = {}
+	for key, module in InputModules do
+		self._controllers[key] = module.new(config)
+	end
 	return self
 end
 
 function ClassInput._onLastInputCategoryChanged(self: ControllersTypeClient.ClassInput, lastInputCategory)
 	self._currentInputCategory = lastInputCategory
+	print("lastInputCategory ", lastInputCategory)
+	for inputCategory, module in self._controllers do
+		print("inputCategory ", inputCategory)
+		print("inputCategory == lastInputCategory ", inputCategory == lastInputCategory)
 
-	for inputCategory, module in InputModules do
 		if inputCategory == lastInputCategory then
 			module:Enable()
 		else

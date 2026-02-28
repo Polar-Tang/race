@@ -59,7 +59,7 @@ function CarClient.Init(self: ControllersTypeClient.CarClient)
 	self._DriverController = Controller.new(config)
 	self._DriverController:initialize()
 	self:_initControllers(Controllers)
-
+	self._controllers["FX"]:Init()
 	self:SetupDestructionHandler()
 
 	self._maid:GiveTask(self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function()

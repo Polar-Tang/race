@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AbsController = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.AbsController)
 local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
+local default_stats = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.default_stats)
 
 local ConstraintUpdater = setmetatable({}, AbsController)
 ConstraintUpdater.__index = ConstraintUpdater
@@ -19,27 +20,34 @@ end
 -- Update suspension constraints
 function ConstraintUpdater._updateSuspension(self: ControllersTypes.ConstraintUpdater)
 	local suspension = self._suspension
-	local frontLength = suspension:GetAttribute("frontSuspensionLength")
-	local frontStiffness = suspension:GetAttribute("frontSuspensionStiffness")
-	local frontDamping = suspension:GetAttribute("frontSuspensionDamping")
-	local rearLength = suspension:GetAttribute("rearSuspensionLength")
-	local rearStiffness = suspension:GetAttribute("rearSuspensionStiffness")
-	local rearDamping = suspension:GetAttribute("rearSuspensionDamping")
-	local frontCamber = suspension:GetAttribute("frontCamber")
-	local rearCamber = suspension:GetAttribute("rearCamber")
+	local frontLength = self._suspension:GetAttribute("frontSuspensionLength")
+	local frontStiffness = self._suspension:GetAttribute("frontSuspensionStiffness")
+	local frontDamping = self._suspension:GetAttribute("frontSuspensionDamping")
+	local rearLength = self._suspension:GetAttribute("rearSuspensionLength")
+	local rearStiffness = self._suspension:GetAttribute("rearSuspensionStiffness")
+	local rearDamping = self._suspension:GetAttribute("rearSuspensionDamping")
+	local frontCamber = self._suspension:GetAttribute("frontCamber")
+	local rearCamber = self._suspension:GetAttribute("rearCamber")
 
 	suspension.WheelFRSuspension.FreeLength = frontLength
 	suspension.WheelFRSuspension.Damping = frontDamping
 	suspension.WheelFRSuspension.Stiffness = frontStiffness
+	suspension.WheelFRSuspension.MaxForce = math.huge
+
 	suspension.WheelFLSuspension.FreeLength = frontLength
 	suspension.WheelFLSuspension.Stiffness = frontStiffness
 	suspension.WheelFLSuspension.Damping = frontDamping
+	suspension.WheelFLSuspension.MaxForce = math.huge
+
 	suspension.WheelRRSuspension.FreeLength = rearLength
 	suspension.WheelRRSuspension.Stiffness = rearStiffness
 	suspension.WheelRRSuspension.Damping = rearDamping
+	suspension.WheelRRSuspension.MaxForce = math.huge
+
 	suspension.WheelRLSuspension.FreeLength = rearLength
 	suspension.WheelRLSuspension.Stiffness = rearStiffness
 	suspension.WheelRLSuspension.Damping = rearDamping
+	suspension.WheelRLSuspension.MaxForce = math.huge
 
 	local engine = self.engine
 	engine.WheelFRMotor.InclinationAngle = 90 + frontCamber
@@ -93,8 +101,80 @@ function ConstraintUpdater._updateRedress(self: ControllersTypes.ConstraintUpdat
 	redress.RedressOrientation.Responsiveness = responsiveness
 end
 
+local function ensureAtt(folder: Folder, attName: string, parentName: ControllersTypes.parentType)
+	local att = folder:GetAttribute(attName)
+	if not att then
+		att = default_stats[parentName][attName]
+		folder:SetAttribute(attName, att)
+	end
+
+	return assert(att, "invalid attribute '", attName, "'")
+end
+
+function ConstraintUpdater._ensureAtt(
+	self: ControllersTypes.ConstraintUpdater,
+	attName: string,
+	parent: ControllersTypes.parentType
+): number
+	if parent == "suspension" then
+		return ensureAtt(self._suspension, attName, parent)
+	end
+	if parent == "antiRoll" then
+		return ensureAtt(self._antiRoll, attName, parent)
+	end
+	if parent == "steering" then
+		return ensureAtt(self._steering, attName, parent)
+	end
+	if parent == "redress" then
+		return ensureAtt(self._redress, attName, parent)
+	end
+	warn("Invalid parent name ", parent)
+	return 0
+end
+
+function ConstraintUpdater._initFolder(self: ControllersTypes.ConstraintUpdater)
+	-- TODO: may ensure folder exists and it has their attributes
+
+	local suspension = {
+		frontSuspensionLength = self:_ensureAtt("frontSuspensionLength", "suspension"),
+		frontSuspensionStiffness = self:_ensureAtt("frontSuspensionStiffness", "suspension"),
+		frontSuspensionDamping = self:_ensureAtt("frontSuspensionDamping", "suspension"),
+		rearSuspensionLength = self:_ensureAtt("rearSuspensionLength", "suspension"),
+		rearSuspensionStiffness = self:_ensureAtt("rearSuspensionStiffness", "suspension"),
+		rearSuspensionDamping = self:_ensureAtt("rearSuspensionDamping", "suspension"),
+		frontCamber = self:_ensureAtt("frontCamber", "suspension"),
+		rearCamber = self:_ensureAtt("rearCamber", "suspension"),
+	}
+	local antiRoll = {
+		frontAntiRollBarDamping = self:_ensureAtt("frontAntiRollBarDamping", "antiRoll"),
+		frontAntiRollBarStiffness = self:_ensureAtt("frontAntiRollBarStiffness", "antiRoll"),
+		rearAntiRollBarStiffness = self:_ensureAtt("rearAntiRollBarStiffness", "antiRoll"),
+		rearAntiRollBarDamping = self:_ensureAtt("rearAntiRollBarDamping", "antiRoll"),
+	}
+	local steering = {
+		steeringRackLength = self:_ensureAtt("steeringRackLength", "steering"),
+		steeringRackResponsiveness = self:_ensureAtt("steeringRackResponsiveness", "steering"),
+		steeringRackSpeed = self:_ensureAtt("steeringRackSpeed", "steering"),
+		steeringRackMaxForce = self:_ensureAtt("steeringRackMaxForce", "steering"),
+	}
+	local redress = {
+		redressMaxTorque = self:_ensureAtt("redressMaxTorque", "redress"),
+		redressResponsiveness = self:_ensureAtt("redressResponsiveness", "redress"),
+	}
+	self.config = {
+		["suspension"] = suspension,
+		["antiRoll"] = antiRoll,
+		["steering"] = steering,
+		["redress"] = redress,
+	}
+end
+
+function ConstraintUpdater.Init(self: ControllersTypes.ConstraintUpdater)
+	self:_initFolder()
+end
+
 function ConstraintUpdater.Start(self: ControllersTypes.ConstraintUpdater)
-	local suspensionCOn = self._suspension.AttributeChanged:Connect(function()
+	local suspensionCOn = self._suspension.AttributeChanged:Connect(function(a0)
 		self:_updateSuspension()
 	end)
 	local antiRollCon = self._antiRoll.AttributeChanged:Connect(function(a0: string)

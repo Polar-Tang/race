@@ -34,8 +34,4 @@ function ControllerBaseClient.Destroy(self: ControllersTypeClient.ControllerBase
 	setmetatable(self :: any, nil)
 end
 
-function ControllerBaseClient.Init(self: ControllersTypeClient.ControllerBase): ()
-	error("Most be override by child class")
-end
-
 return ControllerBaseClient

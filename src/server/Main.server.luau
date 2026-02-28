@@ -26,7 +26,7 @@ local CarSpawning = Nevermore("CarSpawning")
 
 local Binders = {
 	["Car"] = Car,
-	["CarSpawnKiosk"] = CarSpawning
+	["CarSpawnKiosk"] = CarSpawning,
 }
 ---------- USE BINDER PORVIDER ----------
 local BinderProvider = Nevermore("BinderProvider")
@@ -57,13 +57,10 @@ local carBinder = BinderProviderInitialized:Get("Car")
 carBinder:GetClassAddedSignal():Connect(function(car)
 	car:Init()
 	car:Start()
-	print("Calling start")
 end)
-
 
 -- TODO GET THE CAR TO SET THE NITRO
 setNitroEnabledRemote.OnServerEvent:Connect(function(player: Player, car: Model, isNitro: boolean)
 	local binder = carBinder:Get(car)
 	binder:OnSetNitroEnabledEvent(player, isNitro)
 end)
-

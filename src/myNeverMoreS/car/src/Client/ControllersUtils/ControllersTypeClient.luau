@@ -109,9 +109,9 @@ export type CameraClass = ControllerBase & {
 	_cycleCameraModeConnection: RBXScriptConnection?,
 	_currentCameraModeIndex: number,
 	_enabled: boolean,
-	
+
 	_cameraModules: any, -- The camera modules that i don't want to type
-	
+
 	_currentModeInfo: any,
 	_cameraMode: any,
 
@@ -235,6 +235,7 @@ export type KeyboardAndMouse = ClientTypes.ControllerBase & {
 export type ClassInput = ClientTypes.ControllerBase & {
 	_currentInputCategory: string,
 	_enabled: boolean,
+	_controllers: any,
 
 	_onLastInputCategoryChanged: (self: ClassInput, string) -> (),
 	_update: (self: ClassInput) -> (),
@@ -264,6 +265,10 @@ export type DriverController = ClientTypes.ControllerBase & {
 	initialize: (self: DriverController) -> (),
 	reset: (self: DriverController) -> (),
 	update: (self: DriverController, deltaTime: number) -> (),
+
+	_ensureAtt: (self: DriverController, attName: string) -> number,
+	_initializeEngineAtt: (self: DriverController) -> (),
+	Init: (self: DriverController) -> (),
 }
 ---== CAR CLIENT ==---
 

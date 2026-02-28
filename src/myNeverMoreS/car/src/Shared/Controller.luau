@@ -1,11 +1,12 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local ControllerBaseClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
 local ControllersTypeClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
-local Table = require(ReplicatedStorage.Nevermore.Quenty.table.Shared.Table)
 local Constants = require(script.Parent.CarConstants)
 local Units = require(script.Parent.Units)
+local default_stats = require(script.Parent.default_stats)
 local lerp = require(script.Parent.lerp)
 
 local engineParameters: { [string]: number } = {
@@ -103,8 +104,8 @@ end
 -- Update the car's target speed and wheel motors' torque and angular velocity
 function DriveController.updateEngine(self: ControllersTypeClient.DriverController, deltaTime: number)
 	local handBrakeInput = self.inputs:GetAttribute(Constants.HAND_BRAKE_INPUT_ATTRIBUTE)
-	local thortleInput = self.inputs:GetAttribute(Constants.THROTTLE_INPUT_ATTRIBUTE)
-	local throttleInput = math.clamp(thortleInput, -1, 1)
+	local throttleInput = self.inputs:GetAttribute(Constants.THROTTLE_INPUT_ATTRIBUTE)
+	throttleInput = math.clamp(throttleInput, -1, 1)
 	local throttleDirection = math.sign(throttleInput)
 	local engineSpeed = self.engine:GetAttribute(Constants.ENGINE_SPEED_ATTRIBUTE)
 	local isNitroEnabled = self.engine:GetAttribute(Constants.NITRO_ENABLED_ATTRIBUTE)
@@ -156,7 +157,6 @@ function DriveController.updateEngine(self: ControllersTypeClient.DriverControll
 	end
 	local studsSpeed = Units.milesPerHourToStudsPerSecond(engineSpeed)
 	local angularVelocity = studsSpeed / self._wheelRadius
-
 	-- Update the wheel motor constraints
 	local engine = self.engine
 	engine.WheelFRMotor.AngularVelocity = angularVelocity
@@ -210,17 +210,11 @@ function DriveController.updateWheelFriction(self: ControllersTypeClient.DriverC
 			PhysicalProperties.new(self._wheelParameters.density, friction, self._wheelParameters.elasticity)
 	end
 end
-local function checkAtt(newAtt)
-	if newAtt and typeof(newAtt) == "number" then
-		return newAtt
-	else
-		print("Unkown param ")
-		return nil
-	end
-end
+
 function DriveController.initialize(self: ControllersTypeClient.DriverController)
 	-- Cache all parameters in tables and update them when the corresponding Attribute updates.
 	-- Parameters aren't going to change very often so there's no reason to call :GetAttribute() constantly.
+
 	for parameter in engineParameters do
 		self.engine:GetAttributeChangedSignal(parameter):Connect(function()
 			local newAtt = self.engine:GetAttribute(parameter)
@@ -230,7 +224,6 @@ function DriveController.initialize(self: ControllersTypeClient.DriverController
 		self._engineParameters[parameter] = newAtt
 		print("self._engineParameters[parameter] ", self._engineParameters[parameter])
 		print("parameter ", parameter)
-
 	end
 
 	for parameter in steeringParameters do
@@ -280,6 +273,46 @@ function DriveController.reset(self: ControllersTypeClient.DriverController)
 			self._wheelParameters.elasticity
 		)
 	end
+end
+
+local function ensureAtt(folder: Folder, attName: string)
+	local att = folder:GetAttribute(attName)
+	if not att then
+		att = default_stats["engine"][attName]
+		folder:SetAttribute(attName, att)
+	end
+
+	return assert(att, "invalid attribute '", attName, "'")
+end
+
+function DriveController._ensureAtt(self, attName: string): number
+	return ensureAtt(self.engine, attName)
+end
+function DriveController._initializeEngineAtt(self)
+	local enginge = {
+		forwardMaxSpeed = self:_ensureAtt("forwardMaxSpeed"),
+		reverseMaxSpeed = self:_ensureAtt("reverseMaxSpeed"),
+		acceleration = self:_ensureAtt("acceleration"),
+		deceleration = self:_ensureAtt("deceleration"),
+		braking = self:_ensureAtt("braking"),
+		engineSpeedCorrection = self:_ensureAtt("engineSpeedCorrection"),
+		minSpeedTorque = self:_ensureAtt("minSpeedTorque"),
+		maxSpeedTorque = self:_ensureAtt("maxSpeedTorque"),
+		handBrakeTorque = self:_ensureAtt("handBrakeTorque"),
+		nitroTorque = self:_ensureAtt("nitroTorque"),
+		nitroTime = self:_ensureAtt("nitroTime"),
+		nitroRechargeTime = self:_ensureAtt("nitroRechargeTime"),
+		nitroMaxSpeed = self:_ensureAtt("nitroMaxSpeed"),
+		nitroAcceleration = self:_ensureAtt("nitroAcceleration"),
+	}
+end
+
+function DriveController.Init(self)
+	if RunService:IsClient() then
+		error("DriveController must be required from a server script")
+	end
+
+	self:_initializeEngineAtt()
 end
 
 function DriveController.update(self: ControllersTypeClient.DriverController, deltaTime: number)

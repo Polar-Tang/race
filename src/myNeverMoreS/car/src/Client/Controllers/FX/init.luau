@@ -2,7 +2,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local BaseService = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.utils.BaseService)
 local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 
@@ -88,18 +89,20 @@ function FX._onHeartbeat(self: FX, _deltaTime: number)
 end
 
 function FX.Init(self: FX)
-	self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function(...)
+	self._maid:GiveTask(self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function(...)
 		self:_onFXChanged(...)
-	end)
-	self.engine:GetAttributeChangedSignal(CarConstants.NITRO_ENABLED_ATTRIBUTE):Connect(function(...)
-		self:_onNitroEnabledChanged(...)
-	end)
+	end))
+	self._maid:GiveTask(
+		self.engine:GetAttributeChangedSignal(CarConstants.NITRO_ENABLED_ATTRIBUTE):Connect(function(...)
+			self:_onNitroEnabledChanged(...)
+		end)
+	)
 
 	self:_onFXChanged()
 	self:_onNitroEnabledChanged()
-	RunService.Heartbeat:Connect(function(a0: number)
+	self._maid:GiveTask(RunService.Heartbeat:Connect(function(a0: number)
 		self:_onHeartbeat(a0)
-	end)
+	end))
 end
 
 return FX

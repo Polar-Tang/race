@@ -74,7 +74,9 @@ function KeyboardAndMouse.Enable(self: ControllersTypeClient.KeyboardAndMouse)
 	local handBrakeKeyCode = self.inputs:GetAttribute(CarConstants.KEYBOARD_HAND_BRAKE_KEY_CODE_ATTRIBUTE)
 
 	local controlsGui = controlsGuiTemplate:Clone()
+	controlsGui.Parent = playerGui
 
+	print("controlsGui ", controlsGui)
 	-- Get the strings to display for each of the keycodes
 	local cycleCameraModeString = getStringForKeyCode(cycleCameraModeKeyCode)
 	local exitString = getStringForKeyCode(exitKeyCode)
@@ -109,13 +111,18 @@ function KeyboardAndMouse.Enable(self: ControllersTypeClient.KeyboardAndMouse)
 		false,
 		exitKeyCode
 	)
-	ContextActionService:BindAction(CarConstants.KEYBOARD_NITRO_BIND_NAME, function(
+	ContextActionService:BindAction(
+		CarConstants.KEYBOARD_NITRO_BIND_NAME,
+		function(
 			actionName: string,
 			inputState: Enum.UserInputState,
 			inputObject: InputObject
 		): Enum.ContextActionResult?
 			return nitroHandler(inputState, self.inputs)
-		end, false, nitroKeyCode)
+		end,
+		false,
+		nitroKeyCode
+	)
 	ContextActionService:BindAction(
 		CarConstants.KEYBOARD_HAND_BRAKE_BIND_NAME,
 		function(
@@ -128,7 +135,6 @@ function KeyboardAndMouse.Enable(self: ControllersTypeClient.KeyboardAndMouse)
 		false,
 		handBrakeKeyCode
 	)
-	controlsGui.Parent = playerGui
 	self._controlsGui = controlsGui
 end
 

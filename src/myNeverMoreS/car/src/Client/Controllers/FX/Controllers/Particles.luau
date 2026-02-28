@@ -1,13 +1,14 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ControllerBaseClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
-local ControllersTypeClient = require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
-
+local ControllerBaseClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
+local ControllersTypeClient =
+	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 
 local Particles = setmetatable({}, ControllerBaseClient)
 Particles.__index = Particles
 Particles.ClassName = "Particles"
 
-function Particles.new(config: ControllersTypeClient.ControllConstructor) : ControllersTypeClient.Particles
+function Particles.new(config: ControllersTypeClient.ControllConstructor): ControllersTypeClient.Particles
 	local self = setmetatable(ControllerBaseClient.new(config), Particles) :: ControllersTypeClient.ControllerBase
 
 	self._rightNitroEmitterAttachment = self.chassis.RightNitroEmitterAttachment
@@ -15,7 +16,7 @@ function Particles.new(config: ControllersTypeClient.ControllConstructor) : Cont
 	return self
 end
 
-function Particles.StartNitro(self : ControllersTypeClient.Particles)
+function Particles.StartNitro(self: ControllersTypeClient.Particles)
 	if self._nitroEnabled then
 		return
 	end
@@ -26,12 +27,12 @@ function Particles.StartNitro(self : ControllersTypeClient.Particles)
 	for _, emitter in self._rightNitroEmitterAttachment:GetChildren() do
 		emitter.Enabled = true
 	end
-	for _, emitter in self._rightNitroEmitterAttachment:GetChildren() do
+	for _, emitter in self._leftNitroEmitterAttachment:GetChildren() do
 		emitter.Enabled = true
 	end
 end
 
-function Particles.StopNitro(self : ControllersTypeClient.Particles)
+function Particles.StopNitro(self: ControllersTypeClient.Particles)
 	if not self._nitroEnabled then
 		return
 	end
