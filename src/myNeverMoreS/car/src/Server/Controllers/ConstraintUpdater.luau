@@ -133,6 +133,23 @@ function ConstraintUpdater._ensureAtt(
 end
 
 function ConstraintUpdater._initFolder(self: ControllersTypes.ConstraintUpdater)
+	local steering = {
+		steeringRackLength = self:_ensureAtt("steeringRackLength", "steering"),
+		steeringRackResponsiveness = self:_ensureAtt("steeringRackResponsiveness", "steering"),
+		steeringRackSpeed = self:_ensureAtt("steeringRackSpeed", "steering"),
+		steeringRackMaxForce = self:_ensureAtt("steeringRackMaxForce", "steering"),
+	}
+	local sppring = Instance.new("SpringConstraint")
+	sppring.Coils = 8
+	sppring.Color = "Lemon metallic"
+	sppring.Radius = 0.2
+	sppring.Thickness = 0.15
+	sppring.Visible = false
+
+	sppring.Attachment0 = self.car.Wheels.WheelFL.Mount.SpringAttachment
+end
+
+function ConstraintUpdater._initFolder(self: ControllersTypes.ConstraintUpdater)
 	-- TODO: may ensure folder exists and it has their attributes
 
 	local suspension = {
@@ -151,12 +168,7 @@ function ConstraintUpdater._initFolder(self: ControllersTypes.ConstraintUpdater)
 		rearAntiRollBarStiffness = self:_ensureAtt("rearAntiRollBarStiffness", "antiRoll"),
 		rearAntiRollBarDamping = self:_ensureAtt("rearAntiRollBarDamping", "antiRoll"),
 	}
-	local steering = {
-		steeringRackLength = self:_ensureAtt("steeringRackLength", "steering"),
-		steeringRackResponsiveness = self:_ensureAtt("steeringRackResponsiveness", "steering"),
-		steeringRackSpeed = self:_ensureAtt("steeringRackSpeed", "steering"),
-		steeringRackMaxForce = self:_ensureAtt("steeringRackMaxForce", "steering"),
-	}
+	
 	local redress = {
 		redressMaxTorque = self:_ensureAtt("redressMaxTorque", "redress"),
 		redressResponsiveness = self:_ensureAtt("redressResponsiveness", "redress"),
