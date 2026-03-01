@@ -275,46 +275,6 @@ function DriveController.reset(self: ControllersTypeClient.DriverController)
 	end
 end
 
-local function ensureAtt(folder: Folder, attName: string)
-	local att = folder:GetAttribute(attName)
-	if not att then
-		att = default_stats["engine"][attName]
-		folder:SetAttribute(attName, att)
-	end
-
-	return assert(att, "invalid attribute '", attName, "'")
-end
-
-function DriveController._ensureAtt(self, attName: string): number
-	return ensureAtt(self.engine, attName)
-end
-function DriveController._initializeEngineAtt(self)
-	local enginge = {
-		forwardMaxSpeed = self:_ensureAtt("forwardMaxSpeed"),
-		reverseMaxSpeed = self:_ensureAtt("reverseMaxSpeed"),
-		acceleration = self:_ensureAtt("acceleration"),
-		deceleration = self:_ensureAtt("deceleration"),
-		braking = self:_ensureAtt("braking"),
-		engineSpeedCorrection = self:_ensureAtt("engineSpeedCorrection"),
-		minSpeedTorque = self:_ensureAtt("minSpeedTorque"),
-		maxSpeedTorque = self:_ensureAtt("maxSpeedTorque"),
-		handBrakeTorque = self:_ensureAtt("handBrakeTorque"),
-		nitroTorque = self:_ensureAtt("nitroTorque"),
-		nitroTime = self:_ensureAtt("nitroTime"),
-		nitroRechargeTime = self:_ensureAtt("nitroRechargeTime"),
-		nitroMaxSpeed = self:_ensureAtt("nitroMaxSpeed"),
-		nitroAcceleration = self:_ensureAtt("nitroAcceleration"),
-	}
-end
-
-function DriveController.Init(self)
-	if RunService:IsClient() then
-		error("DriveController must be required from a server script")
-	end
-
-	self:_initializeEngineAtt()
-end
-
 function DriveController.update(self: ControllersTypeClient.DriverController, deltaTime: number)
 	self:updateNitro(deltaTime)
 	self:updateEngine(deltaTime)

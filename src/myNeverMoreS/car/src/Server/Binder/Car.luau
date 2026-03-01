@@ -7,7 +7,6 @@ local Controllers = {
 	["ConstraintUpdater"] = require(script.Parent.Parent.Controllers.ConstraintUpdater),
 	["Redresser"] = require(script.Parent.Parent.Controllers.Redresser),
 	["Replication"] = require(script.Parent.Parent.Controllers.Replication),
-	["Controller"] = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.Controller),
 }
 
 local Car = {}

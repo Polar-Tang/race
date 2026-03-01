@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CarInitializer = require(script.Parent.CarInitializer)
 local AbsController = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.AbsController)
 local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
-local default_stats = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.default_stats)
 
 local ConstraintUpdater = setmetatable({}, AbsController)
 ConstraintUpdater.__index = ConstraintUpdater
@@ -15,6 +15,7 @@ function ConstraintUpdater.new(config: ControllersTypes.ControllConstructor): Co
 	self._antiRoll = self.car:FindFirstChild("AntiRoll")
 	self._redress = self.car:FindFirstChild("Redress")
 
+	self._carInitializer = CarInitializer.new(config)
 	return self
 end
 -- Update suspension constraints
@@ -99,90 +100,6 @@ function ConstraintUpdater._updateRedress(self: ControllersTypes.ConstraintUpdat
 
 	redress.RedressOrientation.MaxTorque = maxTorque
 	redress.RedressOrientation.Responsiveness = responsiveness
-end
-
-local function ensureAtt(folder: Folder, attName: string, parentName: ControllersTypes.parentType)
-	local att = folder:GetAttribute(attName)
-	if not att then
-		att = default_stats[parentName][attName]
-		folder:SetAttribute(attName, att)
-	end
-
-	return assert(att, "invalid attribute '", attName, "'")
-end
-
-function ConstraintUpdater._ensureAtt(
-	self: ControllersTypes.ConstraintUpdater,
-	attName: string,
-	parent: ControllersTypes.parentType
-): number
-	if parent == "suspension" then
-		return ensureAtt(self._suspension, attName, parent)
-	end
-	if parent == "antiRoll" then
-		return ensureAtt(self._antiRoll, attName, parent)
-	end
-	if parent == "steering" then
-		return ensureAtt(self._steering, attName, parent)
-	end
-	if parent == "redress" then
-		return ensureAtt(self._redress, attName, parent)
-	end
-	warn("Invalid parent name ", parent)
-	return 0
-end
-
-function ConstraintUpdater._initFolder(self: ControllersTypes.ConstraintUpdater)
-	local steering = {
-		steeringRackLength = self:_ensureAtt("steeringRackLength", "steering"),
-		steeringRackResponsiveness = self:_ensureAtt("steeringRackResponsiveness", "steering"),
-		steeringRackSpeed = self:_ensureAtt("steeringRackSpeed", "steering"),
-		steeringRackMaxForce = self:_ensureAtt("steeringRackMaxForce", "steering"),
-	}
-	local sppring = Instance.new("SpringConstraint")
-	sppring.Coils = 8
-	sppring.Color = "Lemon metallic"
-	sppring.Radius = 0.2
-	sppring.Thickness = 0.15
-	sppring.Visible = false
-
-	sppring.Attachment0 = self.car.Wheels.WheelFL.Mount.SpringAttachment
-end
-
-function ConstraintUpdater._initFolder(self: ControllersTypes.ConstraintUpdater)
-	-- TODO: may ensure folder exists and it has their attributes
-
-	local suspension = {
-		frontSuspensionLength = self:_ensureAtt("frontSuspensionLength", "suspension"),
-		frontSuspensionStiffness = self:_ensureAtt("frontSuspensionStiffness", "suspension"),
-		frontSuspensionDamping = self:_ensureAtt("frontSuspensionDamping", "suspension"),
-		rearSuspensionLength = self:_ensureAtt("rearSuspensionLength", "suspension"),
-		rearSuspensionStiffness = self:_ensureAtt("rearSuspensionStiffness", "suspension"),
-		rearSuspensionDamping = self:_ensureAtt("rearSuspensionDamping", "suspension"),
-		frontCamber = self:_ensureAtt("frontCamber", "suspension"),
-		rearCamber = self:_ensureAtt("rearCamber", "suspension"),
-	}
-	local antiRoll = {
-		frontAntiRollBarDamping = self:_ensureAtt("frontAntiRollBarDamping", "antiRoll"),
-		frontAntiRollBarStiffness = self:_ensureAtt("frontAntiRollBarStiffness", "antiRoll"),
-		rearAntiRollBarStiffness = self:_ensureAtt("rearAntiRollBarStiffness", "antiRoll"),
-		rearAntiRollBarDamping = self:_ensureAtt("rearAntiRollBarDamping", "antiRoll"),
-	}
-	
-	local redress = {
-		redressMaxTorque = self:_ensureAtt("redressMaxTorque", "redress"),
-		redressResponsiveness = self:_ensureAtt("redressResponsiveness", "redress"),
-	}
-	self.config = {
-		["suspension"] = suspension,
-		["antiRoll"] = antiRoll,
-		["steering"] = steering,
-		["redress"] = redress,
-	}
-end
-
-function ConstraintUpdater.Init(self: ControllersTypes.ConstraintUpdater)
-	self:_initFolder()
 end
 
 function ConstraintUpdater.Start(self: ControllersTypes.ConstraintUpdater)

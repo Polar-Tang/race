@@ -80,14 +80,46 @@ export type ConstraintUpdater = ControllerBase & {
 	_suspension: Folder,
 	_antiRoll: Folder,
 	_redress: Folder,
-	config: CarConfig,
-
+	_carInitializer: CarInitializer,
 	_updateSuspension: (ConstraintUpdater) -> (),
 	_updateAntiRoll: (ConstraintUpdater) -> (),
 	_updateRedress: (ConstraintUpdater) -> (),
 	_updateSteering: (ConstraintUpdater) -> (),
 	_ensureAtt: (self: ConstraintUpdater, attName: string, parent: parentType) -> number,
 	_initFolder: (self: ConstraintUpdater) -> (),
+}
+
+export type properties = {
+	ClassName: string?,
+	CFrame: CFrame?,
+}
+
+export type CarInitializer = ControllerBase & {
+	_steering: Folder,
+	_suspension: Folder,
+	_antiRoll: Folder,
+	_redress: Folder,
+	_Wheels: Folder,
+	config: CarConfig,
+
+	_createAttachment: (Parent: BasePart | Model, Name: string, properties: properties) -> Attachment,
+	_ensureAtt: (self: CarInitializer, attName: string, parent: parentType) -> number,
+	_ensureSpringConstraing: (self: CarInitializer, sufix: string) -> (),
+	_initSteering: (self: CarInitializer) -> (),
+	_initFolder: (self: CarInitializer) -> (),
+	Init: (self: CarInitializer) -> (),
+	ChangeChildren: (
+		self: CarInitializer,
+		parent: Instance,
+		childName: string,
+		fn: (Model | BasePart, string, properties) -> Instance,
+		properties?
+	) -> BasePart | Attachment | Model,
+	_initSuspension: (self: CarInitializer) -> any,
+	_createInstance: (Parent: BasePart | Model, Name: string, properties) -> Instance,
+	_ensureAntiroll: (self: CarInitializer, sufix: string) -> Instance,
+	_initAntiRoll: (self: CarInitializer) -> antiRoll,
+	_initializeEngineAtt: (self: CarInitializer) -> (),
 }
 
 ---== Redresser ==---
