@@ -117,7 +117,6 @@ end
 function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufix: string)
 	local spring_name = "Wheel" .. sufix .. "Motor" --WheelFLMotor
 	if self.engine:FindFirstChild(spring_name) then
-		--print("Omitting create springs")
 		return
 	end
 
@@ -134,9 +133,13 @@ function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufi
 	wheelMotor.AngularActuatorType = Enum.ActuatorType.Motor
 
 	local wheel_name = "Wheel" .. sufix
-	--print("FUCKING WHEELNAME ", wheel_name)
 	local the_wheel_model = assert(self._Wheels:FindFirstChild(wheel_name), " create a wheel model")
-	--print("the_wheel_model ", the_wheel_model)
+	--[[
+	wheelModel
+		Wheel
+		Knuckle (only for start f suffix wheels)
+		Mount
+	]]
 
 	local Knuckle = self:_ensureKnuckle(sufix)
 	local Mount = the_wheel_model:FindFirstChild("Mount")
@@ -152,7 +155,6 @@ function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufi
 
 	local wheel_part = the_wheel_model:FindFirstChild("Wheel")
 
-	--print("WTF??? ", wheel_part)
 	wheelMotor.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment")
 end
 
