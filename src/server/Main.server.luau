@@ -1,5 +1,4 @@
 --||Services||--
-local CollectionService = game:GetService("CollectionService")
 local RS = game:GetService("ReplicatedStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
@@ -63,4 +62,20 @@ end)
 setNitroEnabledRemote.OnServerEvent:Connect(function(player: Player, car: Model, isNitro: boolean)
 	local binder = carBinder:Get(car)
 	binder:OnSetNitroEnabledEvent(player, isNitro)
+end)
+
+local carKioskBinder = BinderProviderInitialized:Get("CarSpawnKiosk")
+
+remotes.ChooseCar.OnServerEvent:Connect(function(player: Player, carInformation)
+	if not carInformation then
+		return
+	end
+	if not carInformation.obj then
+		return
+	end
+	local binder = carKioskBinder:Get(carInformation.obj)
+	if not binder then
+		return
+	end
+	binder:SpawnCar(player, carInformation)
 end)

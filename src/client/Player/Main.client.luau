@@ -56,4 +56,7 @@ local carBinder = BinderProviderInitialized:Get("Car")
 carBinder:GetClassAddedSignal():Connect(function(car)
 	car:Init()
 	print("Calling start")
+	-- car:Start()
 end)
+
+local _ = require(script.Parent.components.ChooseCar)

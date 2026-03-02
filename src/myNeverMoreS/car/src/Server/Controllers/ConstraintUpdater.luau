@@ -1,5 +1,4 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CarInitializer = require(script.Parent.CarInitializer)
 local AbsController = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.AbsController)
 local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
 
@@ -15,7 +14,6 @@ function ConstraintUpdater.new(config: ControllersTypes.ControllConstructor): Co
 	self._antiRoll = self.car:FindFirstChild("AntiRoll")
 	self._redress = self.car:FindFirstChild("Redress")
 
-	self._carInitializer = CarInitializer.new(config)
 	return self
 end
 -- Update suspension constraints

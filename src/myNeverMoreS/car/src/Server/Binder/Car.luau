@@ -1,10 +1,11 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CarInitializer = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.CarInitializer)
 local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
 local BaseObject = require(ReplicatedStorage.Nevermore.Quenty.baseobject.Shared.BaseObject)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 local Controllers = {
-	["Occupant"] = require(script.Parent.Parent.Controllers.Occupant),
 	["ConstraintUpdater"] = require(script.Parent.Parent.Controllers.ConstraintUpdater),
+	["Occupant"] = require(script.Parent.Parent.Controllers.Occupant),
 	["Redresser"] = require(script.Parent.Parent.Controllers.Redresser),
 	["Replication"] = require(script.Parent.Parent.Controllers.Replication),
 }
@@ -29,10 +30,16 @@ export type Car = typeof(setmetatable(
 ]=]
 function Car.new(obj: Instance?): Car
 	local self = setmetatable(BaseObject.new(obj) :: any, Car)
+	self._carInitializer = CarInitializer.new({
+		cart = self._obj,
+	})
+
 	return self
 end
 
 function Car.Init(self)
+	self._carInitializer:Init()
+
 	self:_initControllers()
 end
 
@@ -46,6 +53,9 @@ function Car._initControllers(self)
 		local new_controller = ctrller.new(controller_constructor)
 		controllers[new_controller.ClassName] = new_controller
 		-- TODO: Call controller init
+		if new_controller.Init then
+			new_controller:Init()
+		end
 	end
 
 	self._controllers = controllers

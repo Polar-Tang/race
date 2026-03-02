@@ -7,7 +7,7 @@ local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Serv
 local ClientTypes = require(script.Parent.ClientTypes)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 
-local BaseService = {}
+local BaseService = setmetatable({}, ControllerBaseClient)
 BaseService.ClassName = "BaseService"
 BaseService.__index = BaseService
 
@@ -21,6 +21,7 @@ export type BaseService = typeof(setmetatable(
 
 function BaseService.new(config: ClientTypes.ControllConstructor): BaseService
 	local self = setmetatable(ControllerBaseClient.new(config) :: any, BaseService)
+
 	return self
 end
 

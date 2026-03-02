@@ -27,9 +27,8 @@ local default_stats = {
 		redressMaxTorque = 500000,
 		redressResponsiveness = 10,
 	},
-	enginge = {
+	engine = {
 		_nitro = 1,
-		_speed = 0,
 		acceleration = 40,
 		braking = 105,
 		deceleration = 35,
@@ -44,6 +43,14 @@ local default_stats = {
 		nitroTime = 3,
 		nitroTorque = 15000,
 		reverseMaxSpeed = 30,
+		_speed = 0,
+	},
+	wheels_parametes = {
+		density = 1,
+		elasticity = 0,
+		kineticFriction = 0.8,
+		slipThreshold = 10,
+		staticFriction = 1,
 	},
 }
 

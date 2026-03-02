@@ -34,7 +34,6 @@ function CarClient.new(car: Model)
 		car = car,
 	}
 	local self = setmetatable(BaseService.new(config) :: any, CarClient)
-
 	self._totalSpeedChange = 0
 	self._lastSpeed = self.chassis.AssemblyLinearVelocity.Magnitude
 	self._lastCollisionUpdate = os.clock()
@@ -53,6 +52,10 @@ function CarClient.new(car: Model)
 end
 
 function CarClient.Init(self: ControllersTypeClient.CarClient)
+	repeat
+		task.wait()
+	until self.engine:GetAttribute(CarConstants.ENGINE_SPEED_ATTRIBUTE)
+
 	local config: ControllersTypeClient.ControllConstructor = {
 		car = self.car,
 	}
@@ -60,10 +63,15 @@ function CarClient.Init(self: ControllersTypeClient.CarClient)
 	self._DriverController:initialize()
 	self:_initControllers(Controllers)
 	self._controllers["FX"]:Init()
-	self:SetupDestructionHandler()
 
 	self._maid:GiveTask(self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function()
 		self:OnOccupantChanged()
+	end))
+
+	maid:GiveTask(config.car.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			self:StopControlling()
+		end
 	end))
 end
 
@@ -123,9 +131,11 @@ function CarClient.StopControlling(self: ControllersTypeClient.CarClient)
 	self._controllers["ClassInput"]:Disable()
 	self._controllers["Speedometer"]:Disable()
 
-	-- Disconnect event connections
+	-- Disconnect event connections and all the other controlles connections
 	maid:DoCleaning()
-
+	for _, controller in pairs(self._controllers) do
+		controller:Destroy()
+	end
 	-- Reset the car Controller. If the car has been destroyed (i.e. is not parented anywhere in the DataModel) this can be skipped.
 	if self.car:IsDescendantOf(game) then
 		self._DriverController:reset()
@@ -162,23 +172,6 @@ function CarClient.OnOccupantChanged(self: ControllersTypeClient.CarClient)
 	else
 		self:StopControlling()
 	end
-end
-
--- When using Deferred signal mode: since this script is parented to the car, destroying the car will clean up
--- all connections (including .Destroying) before they can actually execute.
--- To avoid this, we'll use a slightly hacky solution and clone a listener script into PlayerScripts.
--- This script will continue running after the car is destroyed and allow us to properly clean up when the car is destroyed.
-function CarClient.SetupDestructionHandler(self: ControllersTypeClient.CarClient)
-	local destructionHandler = destructionHandlerTemplate:Clone()
-	destructionHandler.Parent = player.PlayerScripts
-	destructionHandler.Enabled = true
-
-	-- Defer firing the BindableEvent so the script is able to initialize first
-	task.defer(function()
-		destructionHandler.BindToCar:Fire(self.car, function()
-			self:StopControlling()
-		end)
-	end)
 end
 
 return CarClient

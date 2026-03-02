@@ -13,15 +13,22 @@ AbsController.__index = AbsController
 	@return AbsController
 ]=]
 function AbsController.new(config: ControllersTypes.ControllConstructor): ControllersTypes.ControllerBase
+	local maid = Maid.new()
 	local configuration: ControllersTypes.baseData = {
-		_maid = Maid.new(),
+		_maid = maid,
 		car = config.cart,
 		chassis = config.cart:FindFirstChild("Chassis"),
 		inputs = config.cart:FindFirstChild("Inputs"),
 		driverSeat = config.cart:FindFirstChild("DriverSeat"),
 		engine = config.cart:FindFirstChild("Engine"),
 	}
-	return setmetatable(configuration :: any, AbsController)
+	local self = setmetatable(configuration :: any, AbsController)
+	maid:GiveTask(config.cart.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			self:Destroy()
+		end
+	end))
+	return self
 end
 
 --[=[
@@ -30,10 +37,6 @@ end
 function AbsController.Destroy(self: ControllersTypes.ControllerBase): ()
 	self._maid:DoCleaning()
 	setmetatable(self :: any, nil)
-end
-
-function AbsController.Init(self: ControllersTypes.ControllerBase): ()
-	error("Most be override by child class")
 end
 
 return AbsController

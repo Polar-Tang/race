@@ -1,12 +1,10 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local ControllerBaseClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllerBaseClient)
 local ControllersTypeClient =
 	require(ReplicatedStorage.Nevermore.Custom.car.src.Client.ControllersUtils.ControllersTypeClient)
 local Constants = require(script.Parent.CarConstants)
 local Units = require(script.Parent.Units)
-local default_stats = require(script.Parent.default_stats)
 local lerp = require(script.Parent.lerp)
 
 local engineParameters: { [string]: number } = {
@@ -174,6 +172,8 @@ function DriveController.updateEngine(self: ControllersTypeClient.DriverControll
 		engine.WheelRLMotor.AngularVelocity = -angularVelocity
 		engine.WheelRLMotor.MotorMaxTorque = torque
 	end
+	print(torque, "torque")
+	print("angularVelocity", angularVelocity)
 end
 
 -- Update the steering rack position based on the steering input and current speed of the car

@@ -71,9 +71,10 @@ export type CarConfig = {
 	antiRoll: antiRoll,
 	steering: steering,
 	redress: redress,
+	wheels_parametes: any,
 }
 
-export type parentType = "suspension" | "antiRoll" | "steering" | "redress"
+export type parentType = "suspension" | "antiRoll" | "steering" | "redress" | "engine" | "wheels_parametes"
 
 export type ConstraintUpdater = ControllerBase & {
 	_steering: Folder,
@@ -112,7 +113,6 @@ export type CarInitializer = ControllerBase & {
 		self: CarInitializer,
 		parent: Instance,
 		childName: string,
-		fn: (Model | BasePart, string, properties) -> Instance,
 		properties?
 	) -> BasePart | Attachment | Model,
 	_initSuspension: (self: CarInitializer) -> any,
@@ -120,6 +120,12 @@ export type CarInitializer = ControllerBase & {
 	_ensureAntiroll: (self: CarInitializer, sufix: string) -> Instance,
 	_initAntiRoll: (self: CarInitializer) -> antiRoll,
 	_initializeEngineAtt: (self: CarInitializer) -> (),
+	_ensureSteeringRack: (self: CarInitializer) -> (),
+	_ensureKnuckle: (self: CarInitializer, sufix: string) -> (),
+	_ensureAntirollbar: (self: CarInitializer, sufix: string) -> Instance,
+	_ensureMotor: (self: CarInitializer, sufix: string) -> (),
+	_ensureChasisShit: (self: CarInitializer) -> (),
+	_initRedress: (self: CarInitializer) -> redress,
 }
 
 ---== Redresser ==---

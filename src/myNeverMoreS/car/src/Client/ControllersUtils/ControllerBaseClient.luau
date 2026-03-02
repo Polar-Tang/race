@@ -15,15 +15,24 @@ ControllerBaseClient.__index = ControllerBaseClient
 function ControllerBaseClient.new(
 	config: ControllersTypeClient.ControllConstructor
 ): ControllersTypeClient.ControllerBase
+	local maid = Maid.new()
+	print("config.car ", config.car)
 	local configuration: ControllersTypeClient.baseData = {
-		_maid = Maid.new(),
+		_maid = maid,
 		car = config.car,
-		chassis = config.car:FindFirstChild("Chassis"),
-		inputs = config.car:FindFirstChild("Inputs"),
-		driverSeat = config.car:FindFirstChild("DriverSeat"),
-		engine = config.car:FindFirstChild("Engine"),
+		chassis = config.car:WaitForChild("Chassis"),
+		inputs = config.car:WaitForChild("Inputs"),
+		driverSeat = config.car:WaitForChild("DriverSeat"),
+		engine = config.car:WaitForChild("Engine"),
 	}
-	return setmetatable(configuration :: any, ControllerBaseClient)
+
+	local self = setmetatable(configuration :: any, ControllerBaseClient)
+	maid:GiveTask(config.car.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			self:Destroy()
+		end
+	end))
+	return self
 end
 
 --[=[
