@@ -86,3 +86,6 @@ end
 ```
 What's a Knuckle and Mount in a real car? what are important to simulate the car phisics on roblox?
 -- Understanding why the antiroll, why is a constraint 
+
+
+See the following lofig, these run for the quantity of suffix WheelFLMotor, WheelFRMotor, WheelRLMotor, WheelRRMotor, if suffix starts with F attachment0 is <respectivelyWheel>.Knuckle.MotorAttachment but if suffix starts with R attachment0 is <respectivelyWheel>.Motor.MotorAttachment while attachment0 always is <respectivelyWheel>.Wheel.MotorAttachment. PLease ensure attachment0 and 1 is right self:ChangeChildren is a method that takes a parend and try to find its children using the secon argument string then return the instance, if it's not found create the instance with optional propertes (if there are no properties an attachment with default properties is created) and return it
