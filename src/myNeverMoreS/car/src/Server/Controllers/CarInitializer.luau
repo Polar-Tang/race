@@ -86,9 +86,7 @@ function CarInitializer._ensureKnuckle(self: ControllersTypes.CarInitializer, su
 	local wheel_name = "Wheel" .. rightSuffix
 	local the_wheel = assert(self._Wheels:FindFirstChild(wheel_name), " create a wheel model")
 	local Knuckle = assert(the_wheel:FindFirstChild("Knuckle"), " wheel '" .. wheel_name .. "' must have Knuckles")
-	task.delay(5, function()
-		print("Knuckle y ", Knuckle.Position.Y) --▶ Knuckle y  -507.1846923828125 (x2)
-	end)
+
 	local Mount = assert(the_wheel:FindFirstChild("Mount"), " wheel '" .. wheel_name .. "' must have Mount")
 	local HingeAttachmentMount = self:ChangeChildren(Mount, "HingeAttachment")
 	local HingeAttachmentKnuckle = self:ChangeChildren(Knuckle, "HingeAttachment")
@@ -147,15 +145,25 @@ function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufi
 	print(Mount, " Mount")
 
 	-- uses the knuckle if is a fron wheel, otherwises uses the Mount wheel
+	-- Attachment world cframe most be the same
+	local wheel_part = the_wheel_model:FindFirstChild("Wheel")
+	local properties = {
+		WorldPosition = wheel_part.Position,
+		Axis = Vector3.new(-0, 1, 0),
+	}
 	wheelMotor.Attachment0 = (
 		if sufix:sub(1, 1) == "F"
-			then self:ChangeChildren(Knuckle, "MotorAttachment")
-			else self:ChangeChildren(Mount, "MotorAttachment")
+			then self:ChangeChildren(Knuckle, "MotorAttachment", properties)
+			else self:ChangeChildren(Mount, "MotorAttachment", properties)
 	)
 
-	local wheel_part = the_wheel_model:FindFirstChild("Wheel")
 
-	wheelMotor.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment")
+	wheelMotor.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment", {
+		WorldPosition = wheel_part.Position,
+		Axis = Vector3.new(-1, 0, 0),
+	})
+	print(wheelMotor.Attachment0.WorldPosition)
+	print(wheelMotor.Attachment1.WorldPosition)
 end
 
 local wheel_suffix = {
@@ -225,6 +233,11 @@ function CarInitializer._ensureSpringConstraing(self: ControllersTypes.CarInitia
 
 	local wheel_part = the_wheel:FindFirstChild("Wheel")
 	sppring.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment")
+
+	
+	local no_collide_chassis = Instance.new("NoCollisionConstraint")
+	no_collide_chassis.Part0 = self.chassis
+	no_collide_chassis.Part1 = wheel_part
 end
 
 function CarInitializer._ensureSteeringRack(self: ControllersTypes.CarInitializer)
