@@ -56,6 +56,30 @@ local carBinder = BinderProviderInitialized:Get("Car")
 carBinder:GetClassAddedSignal():Connect(function(car)
 	car:Init()
 	car:Start()
+	local car_template = workspace.Cart
+	local descendants = car_template:GetDescendants()
+	for _, descendant in ipairs(descendants) do
+		if descendant:IsA("Attachment") then
+			local constraints = descendant:GetConstraints()
+
+			print(descendant.Name, constraints)
+			print(descendant)
+			if next(constraints) == nil then
+				print(
+					"ATT WITN NO CONSTRAINT FOUNR ON "
+						.. descendant.Parent.Parent.Parent.Name
+						.. "."
+						.. descendant.Parent.Parent.Name
+						.. "."
+						.. descendant.Parent.Name
+						.. "."
+				)
+				--Attachment1=HingeATTACHMENT
+			end
+
+			print("------------------------------------------------------------")
+		end
+	end
 end)
 
 -- TODO GET THE CAR TO SET THE NITRO

@@ -126,6 +126,7 @@ export type CarInitializer = ControllerBase & {
 	_ensureMotor: (self: CarInitializer, sufix: string) -> (),
 	_ensureChasisShit: (self: CarInitializer) -> (),
 	_initRedress: (self: CarInitializer) -> redress,
+	_ensureSteerRack: (self: CarInitializer) -> (),
 }
 
 ---== Redresser ==---

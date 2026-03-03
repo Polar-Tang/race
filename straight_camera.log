@@ -1,103 +1,208 @@
-  13:55:12.753  TRAILING_CATCHUP_SPEED  15 4.02255392074585, 0.3561677634716034, 4.514947891235352  -  Client - ChaseCamera:134
-  13:55:12.777  TRAILING_CATCHUP_SPEED  15 4.3189167976379395, 0.23903422057628632, 5.033167839050293  -  Client - ChaseCamera:134
-  13:55:12.796  TRAILING_CATCHUP_SPEED  15 3.9470505714416504, 0.11671622842550278, 4.716413974761963  -  Client - ChaseCamera:134
-  13:55:12.821  TRAILING_CATCHUP_SPEED  15 4.196597576141357, 0.05023491755127907, 5.11888313293457  -  Client - ChaseCamera:134
-  13:55:12.839  TRAILING_CATCHUP_SPEED  15 3.772088050842285, -0.040072061121463776, 4.695338249206543  -  Client - ChaseCamera:134
-  13:55:12.869  TRAILING_CATCHUP_SPEED  15 4.4388322830200195, -0.5359025001525879, 5.624118328094482  -  Client - ChaseCamera:134
-  13:55:12.890  TRAILING_CATCHUP_SPEED  15 3.5632758140563965, -0.6019169688224792, 4.550400733947754  -  Client - ChaseCamera:134
-  13:55:12.914  TRAILING_CATCHUP_SPEED  15 3.8709492683410645, -0.768733024597168, 4.979245185852051  -  Client - ChaseCamera:134
-  13:55:12.931  TRAILING_CATCHUP_SPEED  15 3.400334358215332, -0.7820016145706177, 4.377364635467529  -  Client - ChaseCamera:134
-  13:55:12.956  TRAILING_CATCHUP_SPEED  15 3.902719497680664, -1.1841702461242676, 4.96714973449707  -  Client - ChaseCamera:134
-  13:55:12.974  TRAILING_CATCHUP_SPEED  15 3.50441837310791, -1.1873337030410767, 4.450170516967773  -  Client - ChaseCamera:134
-  13:55:13.005  TRAILING_CATCHUP_SPEED  15 4.224862575531006, -1.537686824798584, 5.372615814208984  -  Client - ChaseCamera:134
-  13:55:13.029  TRAILING_CATCHUP_SPEED  15 3.6003007888793945, -1.3187546730041504, 4.595752716064453  -  Client - ChaseCamera:134
-  13:55:13.053  TRAILING_CATCHUP_SPEED  15 3.7008056640625, -1.380234718322754, 4.712643623352051  -  Client - ChaseCamera:134
-  13:55:13.073  TRAILING_CATCHUP_SPEED  15 3.3928685188293457, -1.2222545146942139, 4.3177032470703125  -  Client - ChaseCamera:134
-  13:55:13.104  TRAILING_CATCHUP_SPEED  15 4.136707782745361, -1.2967654466629028, 5.259464263916016  -  Client - ChaseCamera:134
-  13:55:13.132  TRAILING_CATCHUP_SPEED  15 3.727168083190918, -0.9490573406219482, 4.738600730895996  -  Client - ChaseCamera:134
-  13:55:13.150  TRAILING_CATCHUP_SPEED  15 3.149972915649414, -0.6357308626174927, 4.012754917144775  -  Client - ChaseCamera:134
-  13:55:13.175  TRAILING_CATCHUP_SPEED  15 3.7069902420043945, -0.5440363883972168, 4.731657028198242  -  Client - ChaseCamera:134
-  13:55:13.195  TRAILING_CATCHUP_SPEED  15 3.422316551208496, -0.32004714012145996, 4.37684965133667  -  Client - ChaseCamera:134
-  13:55:13.222  TRAILING_CATCHUP_SPEED  15 3.9076805114746094, -0.1732216328382492, 5.024656772613525  -  Client - ChaseCamera:134
-  13:55:13.243  TRAILING_CATCHUP_SPEED  15 3.505635976791382, -0.0029125288128852844, 4.546025276184082  -  Client - ChaseCamera:134
-  13:55:13.270  TRAILING_CATCHUP_SPEED  15 3.8037753105163574, -0.08750391751527786, 5.034276008605957  -  Client - ChaseCamera:134
-  13:55:13.288  TRAILING_CATCHUP_SPEED  15 3.32106614112854, -0.02097761258482933, 4.44881010055542  -  Client - ChaseCamera:134
-  13:55:13.315  TRAILING_CATCHUP_SPEED  15 3.873213768005371, 0.1422938108444214, 5.244654655456543  -  Client - ChaseCamera:134
-  13:55:13.337  TRAILING_CATCHUP_SPEED  15 3.455878257751465, 0.28779369592666626, 4.717408180236816  -  Client - ChaseCamera:134
-  13:55:13.375  TRAILING_CATCHUP_SPEED  15 4.447761535644531, 0.711407482624054, 6.128985404968262  -  Client - ChaseCamera:134
-  13:55:13.408  TRAILING_CATCHUP_SPEED  15 3.682927370071411, 0.9428210258483887, 5.121316909790039  -  Client - ChaseCamera:134
-  13:55:13.433  TRAILING_CATCHUP_SPEED  15 3.219512462615967, 1.1039652824401855, 4.495573043823242  -  Client - ChaseCamera:134
-  13:55:13.460  TRAILING_CATCHUP_SPEED  15 3.5462896823883057, 1.5137678384780884, 4.964691162109375  -  Client - ChaseCamera:134
-  13:55:13.480  TRAILING_CATCHUP_SPEED  15 3.131138801574707, 1.569493055343628, 4.38941764831543  -  Client - ChaseCamera:134
-  13:55:13.505  TRAILING_CATCHUP_SPEED  15 3.5464282035827637, 2.064117908477783, 4.963947296142578  -  Client - ChaseCamera:134
-  13:55:13.529  TRAILING_CATCHUP_SPEED  15 3.5137574672698975, 2.053887367248535, 4.9604387283325195  -  Client - ChaseCamera:134
-  13:55:13.557  TRAILING_CATCHUP_SPEED  15 3.8711161613464355, 2.3045663833618164, 5.386264801025391  -  Client - ChaseCamera:134
-  13:55:13.582  TRAILING_CATCHUP_SPEED  15 3.6122779846191406, 1.856440544128418, 4.917889595031738  -  Client - ChaseCamera:134
-  13:55:13.599  TRAILING_CATCHUP_SPEED  15 3.2720158100128174, 1.4769740104675293, 4.502838134765625  -  Client - ChaseCamera:134
-  13:55:13.632  TRAILING_CATCHUP_SPEED  15 4.256412982940674, 1.7586586475372314, 5.907919406890869  -  Client - ChaseCamera:134
-  13:55:13.650  TRAILING_CATCHUP_SPEED  15 3.1497411727905273, 1.0826137065887451, 4.323233604431152  -  Client - ChaseCamera:134
-  13:55:13.675  TRAILING_CATCHUP_SPEED  15 3.8782405853271484, 0.9074979424476624, 5.174182891845703  -  Client - ChaseCamera:134
-  13:55:13.695  TRAILING_CATCHUP_SPEED  15 3.610316276550293, 0.5523654222488403, 4.758662700653076  -  Client - ChaseCamera:134
-  13:55:13.722  TRAILING_CATCHUP_SPEED  15 4.25575065612793, 0.43042346835136414, 5.552768230438232  -  Client - ChaseCamera:134
-  13:55:13.740  TRAILING_CATCHUP_SPEED  15 3.631697177886963, 0.24985824525356293, 4.734435558319092  -  Client - ChaseCamera:134
-  13:55:13.766  TRAILING_CATCHUP_SPEED  15 4.203544616699219, 0.1707489788532257, 5.513422966003418  -  Client - ChaseCamera:134
-  13:55:13.791  TRAILING_CATCHUP_SPEED  15 4.139953136444092, 0.10506580024957657, 5.440649032592773  -  Client - ChaseCamera:134
-  13:55:13.812  TRAILING_CATCHUP_SPEED  15 3.8951287269592285, 0.04974370449781418, 5.1117329597473145  -  Client - ChaseCamera:134
-  13:55:13.838  TRAILING_CATCHUP_SPEED  15 4.3316330909729, 0.05274280905723572, 5.6936235427856445  -  Client - ChaseCamera:134
-  13:55:13.861  TRAILING_CATCHUP_SPEED  15 4.003037929534912, -0.09837586432695389, 5.107057571411133  -  Client - ChaseCamera:134
-  13:55:13.887  TRAILING_CATCHUP_SPEED  15 4.214968204498291, -0.7236149311065674, 4.794651508331299  -  Client - ChaseCamera:134
-  13:55:13.906  TRAILING_CATCHUP_SPEED  15 3.747048854827881, -0.8459893465042114, 4.024368762969971  -  Client - ChaseCamera:134
-  13:55:13.934  TRAILING_CATCHUP_SPEED  15 4.358351707458496, -1.0725982189178467, 4.4477925300598145  -  Client - ChaseCamera:134
-  13:55:13.954  TRAILING_CATCHUP_SPEED  15 3.8734617233276367, -0.8919839859008789, 3.841738700866699  -  Client - ChaseCamera:134
-  13:55:13.978  TRAILING_CATCHUP_SPEED  15 4.103007793426514, -0.7780788540840149, 3.905301094055176  -  Client - ChaseCamera:134
-  13:55:14.008  TRAILING_CATCHUP_SPEED  15 4.50909948348999, -0.6859738230705261, 4.137571334838867  -  Client - ChaseCamera:134
-  13:55:14.027  TRAILING_CATCHUP_SPEED  15 3.711775779724121, -0.41041064262390137, 3.3399524688720703  -  Client - ChaseCamera:134
-  13:55:14.056  TRAILING_CATCHUP_SPEED  15 4.3442792892456055, -0.29306766390800476, 3.8801794052124023  -  Client - ChaseCamera:134
-  13:55:14.079  TRAILING_CATCHUP_SPEED  15 3.975609302520752, -0.10752229392528534, 3.592316150665283  -  Client - ChaseCamera:134
-  13:55:14.102  TRAILING_CATCHUP_SPEED  15 3.9555299282073975, -0.11541616916656494, 3.53342604637146  -  Client - ChaseCamera:134
-  13:55:14.132  TRAILING_CATCHUP_SPEED  15 4.461180686950684, -0.004265822470188141, 3.943511962890625  -  Client - ChaseCamera:134
-  13:55:14.155  TRAILING_CATCHUP_SPEED  15 3.774081230163574, -0.30463454127311707, 2.8540573120117188  -  Client - ChaseCamera:134
-  13:55:14.180  TRAILING_CATCHUP_SPEED  15 4.038890361785889, -0.5624947547912598, 2.6933510303497314  -  Client - ChaseCamera:134
-  13:55:14.202  TRAILING_CATCHUP_SPEED  15 3.5583200454711914, -0.5203848481178284, 2.2229385375976562  -  Client - ChaseCamera:134
-  13:55:14.227  TRAILING_CATCHUP_SPEED  15 4.250422477722168, -0.5649662613868713, 2.5063669681549072  -  Client - ChaseCamera:134
-  13:55:14.245  TRAILING_CATCHUP_SPEED  15 3.5514185428619385, -0.3778562843799591, 2.0433311462402344  -  Client - ChaseCamera:134
-  13:55:14.273  TRAILING_CATCHUP_SPEED  15 4.276237487792969, -0.321084588766098, 2.4250524044036865  -  Client - ChaseCamera:134
-  13:55:14.297  TRAILING_CATCHUP_SPEED  15 3.9638209342956543, -0.1301896870136261, 2.2420620918273926  -  Client - ChaseCamera:134
-  13:55:14.326  TRAILING_CATCHUP_SPEED  15 4.37994384765625, 0.09277831017971039, 2.478888988494873  -  Client - ChaseCamera:134
-  13:55:14.361  TRAILING_CATCHUP_SPEED  15 4.6654863357543945, 0.3732922375202179, 2.638580799102783  -  Client - ChaseCamera:134
-  13:55:14.384  TRAILING_CATCHUP_SPEED  15 3.7111518383026123, 0.08416847884654999, 2.1548666954040527  -  Client - ChaseCamera:134
-  13:55:14.410  TRAILING_CATCHUP_SPEED  15 4.0549211502075195, -0.056633129715919495, 2.36918306350708  -  Client - ChaseCamera:134
-  13:55:14.440  TRAILING_CATCHUP_SPEED  15 4.439754486083984, -0.16777560114860535, 2.5874998569488525  -  Client - ChaseCamera:134
-  13:55:14.465  TRAILING_CATCHUP_SPEED  15 4.079474449157715, -0.16204692423343658, 2.298140048980713  -  Client - ChaseCamera:134
-  13:55:14.484  TRAILING_CATCHUP_SPEED  15 3.786165714263916, -0.10769771784543991, 2.0431151390075684  -  Client - ChaseCamera:134
-  13:55:14.512  TRAILING_CATCHUP_SPEED  15 4.835607528686523, -0.08212243020534515, 2.40272855758667  -  Client - ChaseCamera:134
-  13:55:14.529  TRAILING_CATCHUP_SPEED  15 3.9412057399749756, -0.03454749658703804, 1.8163570165634155  -  Client - ChaseCamera:134
-  13:55:14.555  TRAILING_CATCHUP_SPEED  15 4.793985366821289, 0.008411314338445663, 1.999603033065796  -  Client - ChaseCamera:134
-  13:55:14.578  TRAILING_CATCHUP_SPEED  15 4.678767204284668, 0.05894608050584793, 1.748752474784851  -  Client - ChaseCamera:134
-  13:55:14.596  TRAILING_CATCHUP_SPEED  15 4.411456108093262, 0.10506564378738403, 1.5139986276626587  -  Client - ChaseCamera:134
-  13:55:14.624  TRAILING_CATCHUP_SPEED  15 5.440826416015625, 0.19943007826805115, 1.6766808032989502  -  Client - ChaseCamera:134
-  13:55:14.649  TRAILING_CATCHUP_SPEED  15 5.075170040130615, 0.2475552260875702, 1.4452344179153442  -  Client - ChaseCamera:134
-  13:55:14.668  TRAILING_CATCHUP_SPEED  15 4.741307735443115, 0.2632276117801666, 1.281935691833496  -  Client - ChaseCamera:134
-  13:55:14.695  TRAILING_CATCHUP_SPEED  15 5.661285877227783, 0.34751027822494507, 1.4529415369033813  -  Client - ChaseCamera:134
-  13:55:14.712  TRAILING_CATCHUP_SPEED  15 4.84910249710083, 0.3134499192237854, 1.2062569856643677  -  Client - ChaseCamera:134
-  13:55:14.739  TRAILING_CATCHUP_SPEED  15 5.903870582580566, 0.40114691853523254, 1.42060387134552  -  Client - ChaseCamera:134
-  13:55:14.758  TRAILING_CATCHUP_SPEED  15 5.189081192016602, 0.36870113015174866, 1.2269384860992432  -  Client - ChaseCamera:134
-  13:55:14.786  TRAILING_CATCHUP_SPEED  15 6.187944412231445, 0.48286139965057373, 1.4397047758102417  -  Client - ChaseCamera:134
-  13:55:14.807  TRAILING_CATCHUP_SPEED  15 5.577460289001465, 0.5049595236778259, 1.284751296043396  -  Client - ChaseCamera:134
-  13:55:14.838  TRAILING_CATCHUP_SPEED  15 6.712646484375, 0.621828019618988, 1.496751070022583  -  Client - ChaseCamera:134
-  13:55:14.874  TRAILING_CATCHUP_SPEED  15 6.98820686340332, 0.659218430519104, 1.5185571908950806  -  Client - ChaseCamera:134
-  13:55:14.900  TRAILING_CATCHUP_SPEED  15 5.627316474914551, 0.560738205909729, 1.22995126247406  -  Client - ChaseCamera:134
-  13:55:14.929  TRAILING_CATCHUP_SPEED  15 6.224211692810059, 0.49431508779525757, 1.3373188972473145  -  Client - ChaseCamera:134
-  13:55:14.955  TRAILING_CATCHUP_SPEED  15 6.054482460021973, 0.4092809557914734, 1.3039460182189941  -  Client - ChaseCamera:134
-  13:55:14.975  TRAILING_CATCHUP_SPEED  15 5.707049369812012, 0.3873014450073242, 1.2225972414016724  -  Client - ChaseCamera:134
-  13:55:15.003  TRAILING_CATCHUP_SPEED  15 6.664273262023926, 0.3936321437358856, 1.4159265756607056  -  Client - ChaseCamera:134
-  13:55:15.033  TRAILING_CATCHUP_SPEED  15 6.890265464782715, 0.4174908995628357, 1.463904619216919  -  Client - ChaseCamera:134
-  13:55:15.059  TRAILING_CATCHUP_SPEED  15 6.248575210571289, 0.38679373264312744, 1.359573483467102  -  Client - ChaseCamera:134
-  13:55:15.088  TRAILING_CATCHUP_SPEED  15 6.756128311157227, 0.409554123878479, 1.4960824251174927  -  Client - ChaseCamera:134
-  13:55:15.115  TRAILING_CATCHUP_SPEED  15 6.556967735290527, 0.479570209980011, 1.4918149709701538  -  Client - ChaseCamera:134
-  13:55:15.144  TRAILING_CATCHUP_SPEED  15 6.64690637588501, 0.5524202585220337, 1.5496330261230469  -  Client - ChaseCamera:134
-  13:55:15.171  TRAILING_CATCHUP_SPEED  15 6.480937957763672, 0.254375696182251, 1.493032455444336  -  Client - ChaseCamera:134
-  13:55:15.189  TRAILING_CATCHUP_SPEED  15 5.637424945831299, 0.1701410710811615, 1.2883068323135376  -  Client - ChaseCamera:134
-  13:55:15.216  TRAILING_CATCHUP_SPEED  15 6.784597396850586, 0.2133498191833496, 1.5127509832382202  -  Client - ChaseCamera:134
-  13:55:15.236  TRAILING_CATCHUP_SPEED  15 6.134274005889893, 0.12072481960058212, 1.3461730480194092  -  Client - ChaseCamera:134
-  13:55:15.265  TRAILING_CATCHUP_SPEED  15 7.08421516418457, 0.08941259980201721, 1.5229108333587646  -  Client - ChaseCamera:134
+  10:06:44.609  RightRodAttachment  ▼  {
+                    [1] = RodConstraint
+                 }  -  Server - Main:65
+  10:06:44.611  RightRodAttachment  -  Server - Main:66
+  10:06:44.614  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.615  SteeringAttachment  ▼  {
+                    [1] = SteeringRack
+                 }  -  Server - Main:65
+  10:06:44.617  SteeringAttachment  -  Server - Main:66
+  10:06:44.620  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.620  LeftRodAttachment  ▼  {
+                    [1] = RodConstraint
+                 }  -  Server - Main:65
+  10:06:44.622  LeftRodAttachment  -  Server - Main:66
+  10:06:44.625  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.625  DrivePromptAttachment {}  -  Server - Main:65
+  10:06:44.625  DrivePromptAttachment  -  Server - Main:66
+  10:06:44.628  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.628  FrontLeftSparks {}  -  Server - Main:65
+  10:06:44.628  FrontLeftSparks  -  Server - Main:66
+  10:06:44.630  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.631  SteeringAttachment  ▼  {
+                    [1] = SteeringRack
+                 }  -  Server - Main:65
+  10:06:44.633  SteeringAttachment  -  Server - Main:66
+  10:06:44.636  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.636  RightNitroEmitterAttachment {}  -  Server - Main:65
+  10:06:44.636  RightNitroEmitterAttachment  -  Server - Main:66
+  10:06:44.639  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.639  FlipperAttachment  ▼  {
+                    [1] = RedressOrientation
+                 }  -  Server - Main:65
+  10:06:44.642  FlipperAttachment  -  Server - Main:66
+  10:06:44.644  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.645  FrontRightSparks {}  -  Server - Main:65
+  10:06:44.645  FrontRightSparks  -  Server - Main:66
+  10:06:44.648  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.648  LeftNitroEmitterAttachment {}  -  Server - Main:65
+  10:06:44.648  LeftNitroEmitterAttachment  -  Server - Main:66
+  10:06:44.651  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.651  HoodCameraAttachment {}  -  Server - Main:65
+  10:06:44.652  HoodCameraAttachment  -  Server - Main:66
+  10:06:44.655  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.656  InteriorCameraAttachment {}  -  Server - Main:65
+  10:06:44.656  InteriorCameraAttachment  -  Server - Main:66
+  10:06:44.658  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.659  NitroAttachment  ▼  {
+                    [1] = NitroVelocity
+                 }  -  Server - Main:65
+  10:06:44.661  NitroAttachment  -  Server - Main:66
+  10:06:44.664  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.664  AntiRollAttachment {}  -  Server - Main:65
+  10:06:44.664  AntiRollAttachment  -  Server - Main:66
+  10:06:44.667  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.667  RightSpringAttachment {}  -  Server - Main:65
+  10:06:44.668  RightSpringAttachment  -  Server - Main:66
+  10:06:44.670  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.670  LeftSpringAttachment  ▼  {
+                    [1] = AntiRollBarFL,
+                    [2] = AntiRollBarFR
+                 }  -  Server - Main:65
+  10:06:44.673  LeftSpringAttachment  -  Server - Main:66
+  10:06:44.675  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.675  AntiRollAttachment {}  -  Server - Main:65
+  10:06:44.676  AntiRollAttachment  -  Server - Main:66
+  10:06:44.678  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.679  RightSpringAttachment {}  -  Server - Main:65
+  10:06:44.679  RightSpringAttachment  -  Server - Main:66
+  10:06:44.682  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.682  LeftSpringAttachment  ▼  {
+                    [1] = AntiRollBarRL,
+                    [2] = AntiRollBarRR
+                 }  -  Server - Main:65
+  10:06:44.684  LeftSpringAttachment  -  Server - Main:66
+  10:06:44.687  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.687  HingeAttachment {}  -  Server - Main:65
+  10:06:44.687  HingeAttachment  -  Server - Main:66
+  10:06:44.690  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.690  SpringAttachment  ▼  {
+                    [1] = WheelFLSuspension
+                 }  -  Server - Main:65
+  10:06:44.692  SpringAttachment  -  Server - Main:66
+  10:06:44.695  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.695  Attachment  ▼  {
+                    [1] = FrontLeftHinge,
+                    [2] = FrontLeftTorque
+                 }  -  Server - Main:65
+  10:06:44.697  Attachment  -  Server - Main:66
+  10:06:44.699  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.699  MotorAttachment  ▼  {
+                    [1] = WheelFLSuspension,
+                    [2] = AntiRollBarFL,
+                    [3] = WheelFLMotor
+                 }  -  Server - Main:65
+  10:06:44.702  MotorAttachment  -  Server - Main:66
+  10:06:44.704  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.704  SteeringAttachment {}  -  Server - Main:65
+  10:06:44.705  SteeringAttachment  -  Server - Main:66
+  10:06:44.707  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.707  HingeAttachment {}  -  Server - Main:65
+  10:06:44.708  HingeAttachment  -  Server - Main:66
+  10:06:44.710  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.710  MotorAttachment  ▼  {
+                    [1] = WheelFLMotor
+                 }  -  Server - Main:65
+  10:06:44.713  MotorAttachment  -  Server - Main:66
+  10:06:44.715  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.715  Attachment  ▼  {
+                    [1] = FrontRightHinge,
+                    [2] = FrontRightTorque
+                 }  -  Server - Main:65
+  10:06:44.717  Attachment  -  Server - Main:66
+  10:06:44.719  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.720  MotorAttachment  ▼  {
+                    [1] = WheelFRSuspension,
+                    [2] = AntiRollBarFR,
+                    [3] = WheelFRMotor
+                 }  -  Server - Main:65
+  10:06:44.722  MotorAttachment  -  Server - Main:66
+  10:06:44.724  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.724  HingeAttachment {}  -  Server - Main:65
+  10:06:44.725  HingeAttachment  -  Server - Main:66
+  10:06:44.727  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.727  SpringAttachment  ▼  {
+                    [1] = WheelFRSuspension
+                 }  -  Server - Main:65
+  10:06:44.729  SpringAttachment  -  Server - Main:66
+  10:06:44.731  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.732  SteeringAttachment {}  -  Server - Main:65
+  10:06:44.732  SteeringAttachment  -  Server - Main:66
+  10:06:44.735  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.735  MotorAttachment  ▼  {
+                    [1] = WheelFRMotor
+                 }  -  Server - Main:65
+  10:06:44.737  MotorAttachment  -  Server - Main:66
+  10:06:44.740  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.740  HingeAttachment {}  -  Server - Main:65
+  10:06:44.740  HingeAttachment  -  Server - Main:66
+  10:06:44.742  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.743  Attachment  ▼  {
+                    [1] = BackRightHinge,
+                    [2] = BackRightTorque
+                 }  -  Server - Main:65
+  10:06:44.745  Attachment  -  Server - Main:66
+  10:06:44.747  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.747  MotorAttachment  ▼  {
+                    [1] = WheelRRSuspension,
+                    [2] = AntiRollBarRR,
+                    [3] = WheelRRMotor
+                 }  -  Server - Main:65
+  10:06:44.749  MotorAttachment  -  Server - Main:66
+  10:06:44.752  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.752  SteeringAttachment {}  -  Server - Main:65
+  10:06:44.752  SteeringAttachment  -  Server - Main:66
+  10:06:44.755  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.755  HingeAttachment {}  -  Server - Main:65
+  10:06:44.755  HingeAttachment  -  Server - Main:66
+  10:06:44.757  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.758  MotorAttachment {}  -  Server - Main:65
+  10:06:44.758  MotorAttachment  -  Server - Main:66
+  10:06:44.760  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.760  HingeAttachment {}  -  Server - Main:65
+  10:06:44.761  HingeAttachment  -  Server - Main:66
+  10:06:44.763  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.763  SpringAttachment  ▼  {
+                    [1] = WheelRRSuspension
+                 }  -  Server - Main:65
+  10:06:44.765  SpringAttachment  -  Server - Main:66
+  10:06:44.768  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.768  MotorAttachment  ▼  {
+                    [1] = WheelRRMotor
+                 }  -  Server - Main:65
+  10:06:44.770  MotorAttachment  -  Server - Main:66
+  10:06:44.772  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.773  SteeringAttachment {}  -  Server - Main:65
+  10:06:44.773  SteeringAttachment  -  Server - Main:66
+  10:06:44.776  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.776  MotorAttachment {}  -  Server - Main:65
+  10:06:44.776  MotorAttachment  -  Server - Main:66
+  10:06:44.778  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.779  HingeAttachment {}  -  Server - Main:65
+  10:06:44.779  HingeAttachment  -  Server - Main:66
+  10:06:44.781  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.781  Attachment  ▼  {
+                    [1] = BackLeftHinge,
+                    [2] = BackLeftTorque
+                 }  -  Server - Main:65
+  10:06:44.783  Attachment  -  Server - Main:66
+  10:06:44.785  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.786  MotorAttachment  ▼  {
+                    [1] = WheelRLSuspension,
+                    [2] = AntiRollBarRL,
+                    [3] = WheelRLMotor
+                 }  -  Server - Main:65
+  10:06:44.788  MotorAttachment  -  Server - Main:66
+  10:06:44.791  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.791  SpringAttachment  ▼  {
+                    [1] = WheelRLSuspension
+                 }  -  Server - Main:65
+  10:06:44.794  SpringAttachment  -  Server - Main:66
+  10:06:44.797  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.797  HingeAttachment {}  -  Server - Main:65
+  10:06:44.798  HingeAttachment  -  Server - Main:66
+  10:06:44.801  ------------------------------------------------------------  -  Server - Main:68
+  10:06:44.801  MotorAttachment  ▼  {
+                    [1] = WheelRLMotor
+                 }  -  Server - Main:65
+  10:06:44.804  MotorAttachment  -  Server - Main:66

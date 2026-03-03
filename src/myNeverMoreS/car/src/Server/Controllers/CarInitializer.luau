@@ -19,19 +19,22 @@ function CarInitializer.new(config: ControllersTypes.ControllConstructor): Contr
 	return self
 end
 
+local funcionSetProps = function(inst: Instance, properties)
+	for key, value in pairs(properties) do
+		print("key ", key)
+		if key == "ClassName" then
+			continue
+		end
+		inst[key] = value
+	end
+end
+
 function CarInitializer._createInstance(Parent: BasePart | Model, Name: string, properties): Attachment
 	local newAttacment =
 		Instance.new(if properties and properties.ClassName then properties.ClassName else "Attachment")
 	newAttacment.Name = Name
 	if properties then
-		for key, value in pairs(properties) do
-			print("key ", key)
-			if key == "ClassName" then
-				continue
-			end
-			newAttacment[key] = value
-		end
-		print("newAttacment ", newAttacment)
+		funcionSetProps(newAttacment, properties)
 	end
 	newAttacment.Parent = Parent
 	return newAttacment
@@ -106,10 +109,30 @@ function CarInitializer._ensureKnuckle(self: ControllersTypes.CarInitializer, su
 	return Knuckle
 end
 
-function CarInitializer._ensureSteerRack(self: ControllersTypes.CarInitializer, sufix: string)
+function CarInitializer._ensureSteerRack(self: ControllersTypes.CarInitializer)
 	local SteeringRack = assert(self.car:FindFirstChild("SteeringRack"), "Cars should have an 'SteeringRack'")
 
-	print(SteeringRack)
+	local RightRodAttachment = self:ChangeChildren(SteeringRack, "RightRodAttachment")
+
+	local KnuckleFR = assert(self._Wheels:FindFirstChild("WheelFR"), " WheelFR must exists"):FindFirstChild("Knuckle")
+	local att1_FR = self:ChangeChildren(KnuckleFR, "SteeringAttachment")
+
+	local RodCOnstaint = self:ChangeChildren(SteeringRack, "RodConstraintRight", {
+		ClassName = "RodConstraint",
+		Attachment0 = RightRodAttachment,
+		Attachment1 = att1_FR,
+	})
+	print("RodCOnstaint att 1 ", RodCOnstaint.Attachment1)
+	local LeftRodAttachment = self:ChangeChildren(SteeringRack, "LeftRodAttachment")
+
+	local KnuckleFL = assert(self._Wheels:FindFirstChild("WheelFL"), " WheelFL must exists"):FindFirstChild("Knuckle")
+	local att1_FL = self:ChangeChildren(KnuckleFL, "SteeringAttachment")
+
+	self:ChangeChildren(SteeringRack, "RodConstraintLeft", {
+		ClassName = "RodConstraint",
+		Attachment0 = LeftRodAttachment,
+		Attachment1 = att1_FL,
+	})
 end
 
 function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufix: string)
@@ -157,7 +180,6 @@ function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufi
 			else self:ChangeChildren(Mount, "MotorAttachment", properties)
 	)
 
-
 	wheelMotor.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment", {
 		WorldPosition = wheel_part.Position,
 		Axis = Vector3.new(-1, 0, 0),
@@ -200,13 +222,13 @@ function CarInitializer._initializeEngineAtt(self: ControllersTypes.CarInitializ
 end
 
 function CarInitializer.ChangeChildren(self, parent: Model | BasePart, childName: string, properties)
-	if childName == "MotorAttachment" then
-		print()
-	end
 	local attachment = parent:FindFirstChild(childName)
 	if not attachment then
 		attachment = self._createInstance(parent, childName, properties)
-		print("return attachment ", attachment)
+	else
+		if properties then
+			funcionSetProps(attachment, properties)
+		end
 	end
 
 	return attachment
@@ -234,7 +256,6 @@ function CarInitializer._ensureSpringConstraing(self: ControllersTypes.CarInitia
 	local wheel_part = the_wheel:FindFirstChild("Wheel")
 	sppring.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment")
 
-	
 	local no_collide_chassis = Instance.new("NoCollisionConstraint")
 	no_collide_chassis.Part0 = self.chassis
 	no_collide_chassis.Part1 = wheel_part
@@ -317,6 +338,30 @@ function CarInitializer._ensureAntirollbar(self: ControllersTypes.CarInitializer
 	end
 	local antiroll_bar = self.car:FindFirstChild(antiroll_name)
 	assert(antiroll_bar, "create an " .. antiroll_name)
+
+	local secondLetter = suffix:sub(2):lower()
+	local att_name
+	if secondLetter == "f" then
+		att_name = "LeftSpringAttachment"
+	elseif secondLetter == "r" then
+		att_name = "RightSpringAttachment"
+		-- antiroll_name = "AntiRollBar" .. "R"
+	end
+
+	local att0 = self:ChangeChildren(antiroll_bar, att_name)
+
+	local wheel = assert(self._Wheels:FindFirstChild("Wheel" .. suffix)):FindFirstChild("Wheel")
+	local att1 = self:ChangeChildren(wheel, "MotorAttachment")
+	local hingeCOnstraint = self:ChangeChildren(antiroll_bar, "HingeConstraint", {
+		ClassName = "HingeConstraint",
+		LowerAngle = -45,
+		Restitution = 0,
+		UpperAngle = 45,
+		ActuatorType = Enum.ActuatorType.None,
+
+		Attachment0 = att0,
+		Attachment1 = att1,
+	})
 	return antiroll_bar
 end
 
@@ -328,9 +373,22 @@ function CarInitializer._ensureAntiroll(self: ControllersTypes.CarInitializer, s
 	})
 	self._antiRoll = antiroll_folder
 
-	local antiroll_bar_name = "AntiRollBar" .. sufix
+	local secondLetter = sufix:sub(2):lower()
+	local att_name
+	if secondLetter == "l" then
+		att_name = "LeftSpringAttachment"
+	elseif secondLetter == "r" then
+		att_name = "RightSpringAttachment"
+		-- antiroll_name = AntiRollBar .. R
+	end
+	print(att_name, att_name)
+	local att0 = self:ChangeChildren(antiroll_bar, att_name)
 
-	local sppring = self._antiRoll:FindFirstChild(antiroll_bar_name)
+	local wheel = assert(self._Wheels:FindFirstChild("Wheel" .. sufix)):FindFirstChild("Wheel")
+	local att1 = self:ChangeChildren(wheel, "MotorAttachment")
+
+	local antiroll_spring_name = "AntiRollBar" .. sufix
+	local sppring = self._antiRoll:FindFirstChild(antiroll_spring_name)
 	if not sppring then
 		sppring = Instance.new("SpringConstraint", self._antiRoll)
 		sppring.Damping = 100
@@ -344,17 +402,12 @@ function CarInitializer._ensureAntiroll(self: ControllersTypes.CarInitializer, s
 		sppring.Radius = 0
 		sppring.Thickness = 0.15
 		sppring.Visible = false
-		sppring.Name = antiroll_bar_name
+		sppring.Name = antiroll_spring_name
 	end
 
-	sppring.Attachment0 = self:ChangeChildren(antiroll_bar, "LeftSpringAttachment")
+	sppring.Attachment0 = att0
 
-	local wheel_name = "Wheel" .. sufix
-	local the_wheel = assert(self._Wheels:FindFirstChild(wheel_name), " create a wheel model")
-	local wheel_part =
-		assert(the_wheel:FindFirstChild("Wheel"), " '" .. wheel_name .. "' model should have a 'Wheel' part")
-	print("fucking wheel_part", wheel_part)
-	sppring.Attachment1 = self:ChangeChildren(wheel_part, "MotorAttachment") --wheel_part.MotorAttachment
+	sppring.Attachment1 = att1
 end
 
 function CarInitializer._initAntiRoll(self: ControllersTypes.CarInitializer): ControllersTypes.antiRoll
@@ -416,6 +469,8 @@ function CarInitializer._initFolder(self: ControllersTypes.CarInitializer)
 	local antiRoll = self:_initAntiRoll()
 
 	local redress = self:_initRedress()
+
+	self:_ensureSteerRack()
 	self.config = {
 		["suspension"] = suspension,
 		["antiRoll"] = antiRoll,
