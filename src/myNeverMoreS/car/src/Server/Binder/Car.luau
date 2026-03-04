@@ -30,15 +30,15 @@ export type Car = typeof(setmetatable(
 ]=]
 function Car.new(obj: Instance?): Car
 	local self = setmetatable(BaseObject.new(obj) :: any, Car)
-	self._carInitializer = CarInitializer.new({
-		cart = self._obj,
-	})
+	--self._carInitializer = CarInitializer.new({
+	--	cart = self._obj,
+	--})
 
 	return self
 end
 
 function Car.Init(self)
-	self._carInitializer:Init()
+	--self._carInitializer:Init()
 
 	self:_initControllers()
 end

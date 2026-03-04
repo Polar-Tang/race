@@ -75,6 +75,7 @@ carBinder:GetClassAddedSignal():Connect(function(car)
 						.. "."
 				)
 				--Attachment1=HingeATTACHMENT
+				--ATTACHMENT0=HingeAttachmentRR
 			end
 
 			print("------------------------------------------------------------")

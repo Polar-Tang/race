@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local CollectionService = game:GetService("CollectionService")
+local ServerStorage = game:GetService("ServerStorage")
 
 -- Use a RemoteEvent to ask the client to choose a car instead of spawning immediately.
 local remoteEventsFolder = ReplicatedStorage.RemoteEvents
@@ -12,8 +13,8 @@ local RecolorModel = require(ReplicatedStorage.Nevermore.Custom.carSpawning.src.
 local getOwnerTag = require(ReplicatedStorage.Nevermore.Custom.carSpawning.src.Server.utils.getOwnerTag)
 local randomColor = require(ReplicatedStorage.Nevermore.Custom.carSpawning.src.Server.utils.randomColor)
 
-local carTemplate = ReplicatedStorage.Car
-local cartTemplate = ReplicatedStorage.Cart
+local carTemplate = ServerStorage.Car
+local cartTemplate = ServerStorage.Cart
 
 local spawnPromptTemplate = script.Parent.SpawnPrompt
 
@@ -80,6 +81,7 @@ function CarSpawning:SpawnCar(owner: Player?, choiceData: choiceData)
 	if not template then
 		print("invalid choiceName ", choiceData.choiceName)
 	end
+	print(template)
 	template:PivotTo(self.spawn_location_cframe)
 
 	-- Randomly color the car

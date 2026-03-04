@@ -78,6 +78,43 @@ function CarInitializer._ensureAtt(
 	warn("Invalid parent name ", parent)
 	return 0
 end
+local WHEELORIENTATION = -172.997 -- wheel YAW
+local data = {
+	["FR"] = {
+		position = "asd",
+		Axis = Vector3.new(-0, 1, 0),
+		SecondaryAxis = Vector3.new(-1, -0, 0),
+		hinge_and_motor_knuckle = {
+			CFrame = Vector3.new(0, 0, -1),
+			orientation = Vector3.new(0, 0, 90),
+			worlfPos = "asd",
+			worldOrientatation = CFrame.Angles(0, WHEELORIENTATION, math.rad(90)),
+		},
+	},
+	["FL"] = {
+		yaw = 25.063,
+		Axis = Vector3.new(-0, 1, 0),
+		SecondaryAxis = Vector3.new(-1, -0, 0),
+		wordlPos = Vector3.new(-2.474, 0.607, -1.291),
+	},
+	["RL"] = {
+		Vector3.new(-2.274, 0.637, 1.56),
+		MountMotor = {
+			Axis = Vector3.new(-0, 1, 0),
+			SecondaryAxis = Vector3.new(-1, -0, 0),
+		},
+	},
+	["rr"] = {
+		yaw = 25.063,
+		Axis = Vector3.new(-0, 1, 0),
+		SecondaryAxis = Vector3.new(-1, -0, 0),
+		wordlPos = Vector3.new(-2.474, 0.607, -1.291),
+		MountMotor = {
+			Axis = Vector3.new(-0, 1, 0),
+			SecondaryAxis = Vector3.new(-1, -0, 0),
+		},
+	},
+}
 
 function CarInitializer._ensureKnuckle(self: ControllersTypes.CarInitializer, sufix: string)
 	local suffix = sufix:lower()
@@ -91,8 +128,12 @@ function CarInitializer._ensureKnuckle(self: ControllersTypes.CarInitializer, su
 	local Knuckle = assert(the_wheel:FindFirstChild("Knuckle"), " wheel '" .. wheel_name .. "' must have Knuckles")
 
 	local Mount = assert(the_wheel:FindFirstChild("Mount"), " wheel '" .. wheel_name .. "' must have Mount")
-	local HingeAttachmentMount = self:ChangeChildren(Mount, "HingeAttachment")
-	local HingeAttachmentKnuckle = self:ChangeChildren(Knuckle, "HingeAttachment")
+	local HingeAttachmentMount = self:ChangeChildren(Mount, "HingeAttachment", {
+		CFrame = CFrame.new(the_wheel.Wheel.CFrame.Position) * CFrame.Angles(0, -180, 90),
+	})
+	local HingeAttachmentKnuckle = self:ChangeChildren(Knuckle, "HingeAttachment", {
+		CFrame = CFrame.new(the_wheel.Wheel.CFrame.Position) * CFrame.Angles(0, -180, 90),
+	})
 
 	local hingeCOnstraint = self:ChangeChildren(Knuckle, "HingeConstraint", {
 		ClassName = "HingeConstraint",
@@ -173,6 +214,8 @@ function CarInitializer._ensureMotor(self: ControllersTypes.CarInitializer, sufi
 	local properties = {
 		WorldPosition = wheel_part.Position,
 		Axis = Vector3.new(-0, 1, 0),
+		SecondaryAxis = Vector3.new(-1, -0, 0),
+		CFrame = CFrame.new(wheel_part.CFrame.Position) * CFrame.Angles(0, 0, math.rad(90)),
 	}
 	wheelMotor.Attachment0 = (
 		if sufix:sub(1, 1) == "F"
@@ -328,30 +371,22 @@ function CarInitializer._initSuspension(self: ControllersTypes.CarInitializer)
 	}
 end
 
-function CarInitializer._ensureAntirollbar(self: ControllersTypes.CarInitializer, sufix: string)
-	local suffix = sufix:lower()
+function CarInitializer._ensureAntirollbar(self: ControllersTypes.CarInitializer, suffix: string)
+	local lower_suffix = suffix:lower()
+	local firstLetter = lower_suffix:sub(1, 1)
+
 	local antiroll_name = "AntiRollBar" .. "F"
-	if suffix:sub(1, 1) == "f" then
+	if firstLetter == "f" then
 		antiroll_name = "AntiRollBar" .. "F"
-	elseif suffix:sub(1, 1) == "r" then
+	elseif firstLetter == "r" then
 		antiroll_name = "AntiRollBar" .. "R"
 	end
 	local antiroll_bar = self.car:FindFirstChild(antiroll_name)
 	assert(antiroll_bar, "create an " .. antiroll_name)
 
-	local secondLetter = suffix:sub(2):lower()
-	local att_name
-	if secondLetter == "f" then
-		att_name = "LeftSpringAttachment"
-	elseif secondLetter == "r" then
-		att_name = "RightSpringAttachment"
-		-- antiroll_name = "AntiRollBar" .. "R"
-	end
+	local att0 = self:ChangeChildren(self.chassis, "AntiRollAttachment" .. firstLetter:upper())
+	local att1 = self:ChangeChildren(antiroll_bar, "AntiRollAttachment")
 
-	local att0 = self:ChangeChildren(antiroll_bar, att_name)
-
-	local wheel = assert(self._Wheels:FindFirstChild("Wheel" .. suffix)):FindFirstChild("Wheel")
-	local att1 = self:ChangeChildren(wheel, "MotorAttachment")
 	local hingeCOnstraint = self:ChangeChildren(antiroll_bar, "HingeConstraint", {
 		ClassName = "HingeConstraint",
 		LowerAngle = -45,

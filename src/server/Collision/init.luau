@@ -1,12 +1,14 @@
 local PhysicsService = game:GetService("PhysicsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local safePlayerAdded = require(script.safePlayerAdded)
 
 local CAR_COLLISION_GROUP = "Car"
 local CHARACTER_COLLISION_GROUP = "Character"
 
-local carTemplate = ReplicatedStorage.Car
+local carTemplate = ServerStorage.Car
+-- local cartTemplate = ServerStorage.Car
 
 local function onCharacterAdded(character: Model)
 	-- Set the collision group for any parts that are added to the character
@@ -48,6 +50,12 @@ local function initialize()
 			descendant.CollisionGroup = CAR_COLLISION_GROUP
 		end
 	end
+
+	-- for _, descendant in cartTemplate:GetDescendants() do
+	-- 	if descendant:IsA("BasePart") then
+	-- 		descendant.CollisionGroup = CAR_COLLISION_GROUP
+	-- 	end
+	-- end
 
 	-- Set character collision groups for all players
 	safePlayerAdded(onPlayerAdded)
