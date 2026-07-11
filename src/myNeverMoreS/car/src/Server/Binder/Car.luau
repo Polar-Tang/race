@@ -1,5 +1,4 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CarInitializer = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.CarInitializer)
 local ControllersTypes = require(ReplicatedStorage.Nevermore.Custom.car.src.Server.Controllers.utils.ControllersTypes)
 local BaseObject = require(ReplicatedStorage.Nevermore.Quenty.baseobject.Shared.BaseObject)
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
@@ -8,6 +7,7 @@ local Controllers = {
 	["Occupant"] = require(script.Parent.Parent.Controllers.Occupant),
 	["Redresser"] = require(script.Parent.Parent.Controllers.Redresser),
 	["Replication"] = require(script.Parent.Parent.Controllers.Replication),
+	["Hitbox"] = require(script.Parent.Parent.Controllers.Hitbox),
 }
 
 local Car = {}
@@ -34,12 +34,20 @@ function Car.new(obj: Instance?): Car
 	--	cart = self._obj,
 	--})
 
+	-- Top of the server hierarchy: if the car model leaves the DataModel, destroy
+	-- the whole tree. BaseObject.Destroy cleans self._maid, which disconnects this
+	-- connection and destroys every controller given to the maid below.
+	self._maid:GiveTask(self._obj.AncestryChanged:Connect(function(_, parent)
+		if not parent then
+			self:Destroy()
+		end
+	end))
+
 	return self
 end
 
 function Car.Init(self)
 	--self._carInitializer:Init()
-
 	self:_initControllers()
 end
 
@@ -52,7 +60,9 @@ function Car._initControllers(self)
 	for _, ctrller in pairs(Controllers) do
 		local new_controller = ctrller.new(controller_constructor)
 		controllers[new_controller.ClassName] = new_controller
-		-- TODO: Call controller init
+		-- Owned by the Car's maid: BaseObject.Destroy -> maid cleaning -> destroys
+		-- every controller, so one Destroy() cascades down the whole hierarchy.
+		self._maid:GiveTask(new_controller)
 		if new_controller.Init then
 			new_controller:Init()
 		end

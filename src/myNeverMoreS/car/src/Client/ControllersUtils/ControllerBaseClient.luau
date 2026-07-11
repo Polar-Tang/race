@@ -26,12 +26,11 @@ function ControllerBaseClient.new(
 		engine = config.car:WaitForChild("Engine"),
 	}
 
+	-- No AncestryChanged watcher here: every controller is owned by its service's
+	-- maid (BaseService._initControllers), and only the top of the hierarchy
+	-- (CarClient) watches the car's ancestry. A per-instance watcher would race the
+	-- owner and fire on already-destroyed (metatable-stripped) controllers.
 	local self = setmetatable(configuration :: any, ControllerBaseClient)
-	maid:GiveTask(config.car.AncestryChanged:Connect(function(_, parent)
-		if not parent then
-			self:Destroy()
-		end
-	end))
 	return self
 end
 

@@ -195,4 +195,11 @@ function ChaseCamera:Disable()
 	RunService:UnbindFromRenderStep(RENDER_STEPPED_BIND_NAME)
 end
 
+-- Polymorphic Destroy: release Enable-time bindings (RenderStep, input modules)
+-- even when destroyed mid-drive, then run the base cleanup.
+function ChaseCamera.Destroy(self: ControllersTypeClient.ChaseCamera)
+	self:Disable()
+	ControllerBaseClient.Destroy(self)
+end
+
 return ChaseCamera

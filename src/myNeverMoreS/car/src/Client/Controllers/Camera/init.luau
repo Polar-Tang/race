@@ -23,12 +23,13 @@ CameraClass.ClassName = "CameraClass"
 function CameraClass.new(config: ControllersTypeClient.ControllConstructor): ControllersTypeClient.CameraClass
 	local self = setmetatable(ControllerBaseClient.new(config), CameraClass)
 
-	self._cycleCameraModeConnection = nil
 	self._currentCameraModeIndex = 1
 	self._enabled = false
 	self._cameraModules = {}
 	for name, module in CameraModules do
 		self._cameraModules[name] = module.new(config)
+		-- Owned by this controller's maid so Destroy cascades down
+		self._maid:GiveTask(self._cameraModules[name])
 	end
 	return self
 end
@@ -70,7 +71,8 @@ function CameraClass.Enable(self: ControllersTypeClient.CameraClass)
 
 	self._enabled = true
 
-	self._cycleCameraModeConnection = cycleCameraModeEvent.Event:Connect(function()
+	-- Named maid slot: cleaned on Disable, but also by Destroy() mid-drive
+	self._maid._cycleCameraMode = cycleCameraModeEvent.Event:Connect(function()
 		self:CycleCameraMode()
 	end)
 
@@ -86,10 +88,7 @@ function CameraClass.Disable(self: ControllersTypeClient.CameraClass)
 	end
 	self._enabled = false
 
-	if self._cycleCameraModeConnection then
-		self._cycleCameraModeConnection:Disconnect()
-		self._cycleCameraModeConnection = nil
-	end
+	self._maid._cycleCameraMode = nil
 
 	-- Reset the camera back to CameraType.Custom to re-enable default camera controls
 	camera.CameraType = Enum.CameraType.Custom
@@ -98,6 +97,14 @@ function CameraClass.Disable(self: ControllersTypeClient.CameraClass)
 	for _, module in self._cameraModules do
 		module:Disable()
 	end
+end
+
+-- Polymorphic Destroy: restore the camera (CameraType) even when destroyed
+-- mid-drive, then run the base cleanup, which destroys the camera modules
+-- owned by self._maid.
+function CameraClass.Destroy(self: ControllersTypeClient.CameraClass)
+	self:Disable()
+	ControllerBaseClient.Destroy(self)
 end
 
 return CameraClass

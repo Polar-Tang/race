@@ -34,7 +34,9 @@ function BaseService._initControllers(self, Controllers)
 	for _, ctrller in pairs(Controllers) do
 		local new_controller = ctrller.new(controller_constructor)
 		controllers[new_controller.ClassName] = new_controller
-		-- TODO: Call controller init
+		-- Owned by this service's maid: Destroy() on the service cascades down the
+		-- whole controller hierarchy (maid calls Destroy on table tasks).
+		self._maid:GiveTask(new_controller)
 		if new_controller.Init then
 			new_controller:Init()
 		end

@@ -21,8 +21,6 @@ local setNitroEnabledRemote = ReplicatedStorage.RemoteEvents.SetNitroEnabled
 
 local setJumpingEnabled = require(script.Parent.utils.setJumpingEnabled)
 
-local maid = Maid.new()
-local destructionHandlerTemplate = script.Parent.utils.DestructionHandler
 local player = Players.LocalPlayer
 
 local CarClient = setmetatable({}, BaseService)
@@ -48,6 +46,11 @@ function CarClient.new(car: Model)
 	self._isControlling = false
 	self._driveAnimationTrack = nil
 
+	-- Connections that only live while the local player is driving. Owned by
+	-- self._maid so Destroy() also cleans an active session.
+	self._controlMaid = Maid.new()
+	self._maid:GiveTask(self._controlMaid)
+
 	return self
 end
 
@@ -61,16 +64,19 @@ function CarClient.Init(self: ControllersTypeClient.CarClient)
 	}
 	self._DriverController = Controller.new(config)
 	self._DriverController:initialize()
+	self._maid:GiveTask(self._DriverController)
+	-- _initControllers already maid-tracks every controller and calls Init on it
 	self:_initControllers(Controllers)
-	self._controllers["FX"]:Init()
 
 	self._maid:GiveTask(self.driverSeat:GetPropertyChangedSignal("Occupant"):Connect(function()
 		self:OnOccupantChanged()
 	end))
 
-	maid:GiveTask(config.car.AncestryChanged:Connect(function(_, parent)
+	-- Top of the client hierarchy: destroying cascades through self._maid to the
+	-- DriverController, every controller (and their own maids/sub-controllers).
+	self._maid:GiveTask(config.car.AncestryChanged:Connect(function(_, parent)
 		if not parent then
-			self:StopControlling()
+			self:Destroy()
 		end
 	end))
 end
@@ -103,12 +109,12 @@ function CarClient.StartControlling(self: ControllersTypeClient.CarClient)
 	-- Connect the Controller's update function to RunService.Stepped.
 	-- Stepped is used here since it fires prior to the physics simulation, and the controller
 	-- updates the physics constraints on the car.
-	maid:GiveTask(RunService.Stepped:Connect(function(_, deltaTime: number)
+	self._controlMaid:GiveTask(RunService.Stepped:Connect(function(_, deltaTime: number)
 		self._DriverController:update(deltaTime)
 	end))
 
 	-- Enable replication for the nitro audio and VFX
-	maid:GiveTask(self.engine:GetAttributeChangedSignal(CarConstants.NITRO_ENABLED_ATTRIBUTE):Connect(function()
+	self._controlMaid:GiveTask(self.engine:GetAttributeChangedSignal(CarConstants.NITRO_ENABLED_ATTRIBUTE):Connect(function()
 		local isNitroEnabled = self.engine:GetAttribute(CarConstants.NITRO_ENABLED_ATTRIBUTE)
 		setNitroEnabledRemote:FireServer(self.car, isNitroEnabled)
 	end))
@@ -131,11 +137,10 @@ function CarClient.StopControlling(self: ControllersTypeClient.CarClient)
 	self._controllers["ClassInput"]:Disable()
 	self._controllers["Speedometer"]:Disable()
 
-	-- Disconnect event connections and all the other controlles connections
-	maid:DoCleaning()
-	for _, controller in pairs(self._controllers) do
-		controller:Destroy()
-	end
+	-- Disconnect the driving-session connections only. The controllers are NOT
+	-- destroyed here: they must survive to be Enabled again when the player
+	-- re-enters the seat; they die with the CarClient (self._maid) in Destroy().
+	self._controlMaid:DoCleaning()
 	-- Reset the car Controller. If the car has been destroyed (i.e. is not parented anywhere in the DataModel) this can be skipped.
 	if self.car:IsDescendantOf(game) then
 		self._DriverController:reset()
@@ -172,6 +177,14 @@ function CarClient.OnOccupantChanged(self: ControllersTypeClient.CarClient)
 	else
 		self:StopControlling()
 	end
+end
+
+-- Polymorphic Destroy: end an active driving session first (restores camera,
+-- touch controls, jumping), then let the base class clean self._maid, which
+-- cascades Destroy to the DriverController and every controller under it.
+function CarClient.Destroy(self: ControllersTypeClient.CarClient)
+	self:StopControlling()
+	BaseService.Destroy(self)
 end
 
 return CarClient

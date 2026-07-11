@@ -19,7 +19,6 @@ function Speedometer.new(config: ControllersTypeClient.ControllConstructor): Con
 
 	self._enabled = false
 	self._gui = nil
-	self._heartbeatConnection = nil
 
 	return self
 end
@@ -58,7 +57,10 @@ function Speedometer.Enable(self: ControllersTypeClient.Speedometer)
 	newGui.Parent = playerGui
 	self._gui = newGui
 
-	self._heartbeatConnection = RunService.Heartbeat:Connect(function(a0: number)  
+	-- Named maid slots: cleaned on Disable below, but ALSO by Destroy() if the
+	-- car dies mid-drive (a bare connection would keep _update running forever).
+	self._maid._gui = newGui
+	self._maid._heartbeat = RunService.Heartbeat:Connect(function(a0: number)
 		self:_update()
 	end)
 end
@@ -69,15 +71,10 @@ function Speedometer.Disable(self: ControllersTypeClient.Speedometer)
 	end
 	self._enabled = false
 
-	if self._heartbeatConnection then
-		self._heartbeatConnection:Disconnect()
-		self._heartbeatConnection = nil
-	end
-
-	if self._gui then
-		self._gui:Destroy()
-		self._gui = nil
-	end
+	-- Assigning nil runs the maid's cleanup for these slots (disconnect/destroy)
+	self._maid._heartbeat = nil
+	self._maid._gui = nil
+	self._gui = nil
 end
 
 return Speedometer

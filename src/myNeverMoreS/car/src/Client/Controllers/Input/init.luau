@@ -14,7 +14,6 @@ local InputModules = {
 	[InputCategorizer.InputCategory.Gamepad] = require(script.Gamepad),
 	[InputCategorizer.InputCategory.Touch] = require(script.Touch),
 }
-local maid = Maid.new()
 
 local ClassInput = setmetatable({}, ControllerBaseClient)
 ClassInput.__index = ClassInput
@@ -29,7 +28,16 @@ function ClassInput.new(config: ControllersTypeClient.ControllConstructor): Cont
 	self._controllers = {}
 	for key, module in InputModules do
 		self._controllers[key] = module.new(config)
+		-- Owned by this controller's maid so Destroy cascades down
+		self._maid:GiveTask(self._controllers[key])
 	end
+
+	-- Connections that only live while input is enabled; a per-instance maid
+	-- (not a module-level one) so Destroy during an active session still cleans,
+	-- and two cars never share cleanup state.
+	self._enableMaid = Maid.new()
+	self._maid:GiveTask(self._enableMaid)
+
 	return self
 end
 
@@ -68,10 +76,10 @@ function ClassInput.Enable(self: ControllersTypeClient.ClassInput)
 	-- Disable touch controls
 	GuiService.TouchControlsEnabled = false
 
-	maid:GiveTask(InputCategorizer.lastInputCategoryChanged:Connect(function(...)
+	self._enableMaid:GiveTask(InputCategorizer.lastInputCategoryChanged:Connect(function(...)
 		self:_onLastInputCategoryChanged(...)
 	end))
-	maid:GiveTask(RunService.Stepped:Connect(function(...)
+	self._enableMaid:GiveTask(RunService.Stepped:Connect(function(...)
 		self:_update()
 	end))
 
@@ -84,14 +92,22 @@ function ClassInput:Disable()
 	end
 	self._enabled = false
 
-	maid:DoCleaning()
+	self._enableMaid:DoCleaning()
 	-- Reenable touch controls
 	GuiService.TouchControlsEnabled = true
 
-	-- Disable all input modules
-	for _, module in InputModules do
-		module:Disable()
+	-- Disable this car's input controllers (instances, not the shared modules)
+	for _, controller in self._controllers do
+		controller:Disable()
 	end
+end
+
+-- Polymorphic Destroy: re-enable the default touch controls even when destroyed
+-- mid-drive, then run the base cleanup, which destroys the input controllers
+-- owned by self._maid.
+function ClassInput.Destroy(self: ControllersTypeClient.ClassInput)
+	self:Disable()
+	ControllerBaseClient.Destroy(self)
 end
 
 return ClassInput

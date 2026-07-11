@@ -95,10 +95,8 @@ function Occupant.Start(self: ControllersTypes.OccupantController)
 
 	self._drivePrompt.KeyboardKeyCode =
 		self.inputs:GetAttribute(CarConstants.KEYBOARD_ENTER_KEY_CODE_ATTRIBUTE) :: Enum.KeyCode
-	self._maid:GiveTask(self._drivePrompt.KeyboardKeyCode)
 	self._drivePrompt.GamepadKeyCode =
 		self.inputs:GetAttribute(CarConstants.GAMEPAD_ENTER_KEY_CODE_ATTRIBUTE) :: Enum.KeyCode
-	self._maid:GiveTask(self._drivePrompt.GamepadKeyCode)
 
 	self:UpdateOwner()
 end

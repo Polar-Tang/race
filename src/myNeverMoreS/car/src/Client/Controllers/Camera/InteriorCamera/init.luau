@@ -122,4 +122,11 @@ function InteriorCamera.Disable(self: ControllersTypeClient.InteriorCamera)
 	end
 end
 
+-- Polymorphic Destroy: release the RenderStep binding and restore character
+-- visibility even when destroyed mid-drive, then run the base cleanup.
+function InteriorCamera.Destroy(self: ControllersTypeClient.InteriorCamera)
+	self:Disable()
+	ControllerBaseClient.Destroy(self)
+end
+
 return InteriorCamera

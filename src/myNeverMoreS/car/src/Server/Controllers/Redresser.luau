@@ -60,7 +60,10 @@ function Redresser.Start(self: ControllersTypes.Redresser)
 		self._redressParameters[parameter] = self._redress:GetAttribute(parameter) :: number
 	end
 
-	task.spawn(function()
+	-- The maid cancels this thread on Destroy; otherwise the loop keeps calling
+	-- methods on a metatable-stripped self after the car is destroyed
+	-- ("attempt to call missing method '_isFlipped'").
+	self._maid:GiveTask(task.spawn(function()
 		while true do
 			local deltaTime = task.wait(0.1)
 			-- If the car is currently flipped, keep track of the amount of time it has been flipped
@@ -75,7 +78,7 @@ function Redresser.Start(self: ControllersTypes.Redresser)
 				self:_redressAsync()
 			end
 		end
-	end)
+	end))
 end
 
 return Redresser

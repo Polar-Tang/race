@@ -172,8 +172,6 @@ function DriveController.updateEngine(self: ControllersTypeClient.DriverControll
 		engine.WheelRLMotor.AngularVelocity = -angularVelocity
 		engine.WheelRLMotor.MotorMaxTorque = torque
 	end
-	print(torque, "torque")
-	print("angularVelocity", angularVelocity)
 end
 
 -- Update the steering rack position based on the steering input and current speed of the car
@@ -222,8 +220,6 @@ function DriveController.initialize(self: ControllersTypeClient.DriverController
 		end)
 		local newAtt = self.engine:GetAttribute(parameter)
 		self._engineParameters[parameter] = newAtt
-		print("self._engineParameters[parameter] ", self._engineParameters[parameter])
-		print("parameter ", parameter)
 	end
 
 	for parameter in steeringParameters do

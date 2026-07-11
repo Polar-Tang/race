@@ -1,5 +1,4 @@
 local PhysicsService = game:GetService("PhysicsService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local safePlayerAdded = require(script.safePlayerAdded)
@@ -7,7 +6,6 @@ local safePlayerAdded = require(script.safePlayerAdded)
 local CAR_COLLISION_GROUP = "Car"
 local CHARACTER_COLLISION_GROUP = "Character"
 
-local carTemplate = ServerStorage.Car
 -- local cartTemplate = ServerStorage.Car
 
 local function onCharacterAdded(character: Model)
@@ -44,12 +42,6 @@ local function initialize()
 	PhysicsService:CollisionGroupSetCollidable(CHARACTER_COLLISION_GROUP, CHARACTER_COLLISION_GROUP, false)
 	PhysicsService:CollisionGroupSetCollidable(CAR_COLLISION_GROUP, CHARACTER_COLLISION_GROUP, false)
 
-	-- Set the car collision group
-	for _, descendant in carTemplate:GetDescendants() do
-		if descendant:IsA("BasePart") then
-			descendant.CollisionGroup = CAR_COLLISION_GROUP
-		end
-	end
 
 	-- for _, descendant in cartTemplate:GetDescendants() do
 	-- 	if descendant:IsA("BasePart") then

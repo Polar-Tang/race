@@ -57,4 +57,11 @@ function FixedCamera.Disable(self: ControllersTypeClient.FixedCamera)
 	RunService:UnbindFromRenderStep(RENDER_STEPPED_BIND_NAME)
 end
 
+-- Polymorphic Destroy: release the RenderStep binding even when destroyed
+-- mid-drive, then run the base cleanup.
+function FixedCamera.Destroy(self: ControllersTypeClient.FixedCamera)
+	self:Disable()
+	ControllerBaseClient.Destroy(self)
+end
+
 return FixedCamera

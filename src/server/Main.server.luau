@@ -1,7 +1,9 @@
 --||Services||--
+local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
+local CarConstants = require(ReplicatedStorage.Nevermore.Custom.car.src.Shared.CarConstants)
 local setupCollisionGroups = require(ServerScriptService.Collision)
 --||Nevermore Shit||--
 ----------------------------- getting servicebag and loader -----------------------------
@@ -21,11 +23,11 @@ _G.FistBag = serviceBag
 ---------- BINDERS ----------
 local Binder = Nevermore("Binder")
 local Car = Nevermore("Car")
-local CarSpawning = Nevermore("CarSpawning")
+local NPC = Nevermore("StateMachineBinder")
 
 local Binders = {
 	["Car"] = Car,
-	["CarSpawnKiosk"] = CarSpawning,
+	["NPC"] = NPC,
 }
 ---------- USE BINDER PORVIDER ----------
 local BinderProvider = Nevermore("BinderProvider")
@@ -56,32 +58,20 @@ local carBinder = BinderProviderInitialized:Get("Car")
 carBinder:GetClassAddedSignal():Connect(function(car)
 	car:Init()
 	car:Start()
-	local car_template = workspace.Cart
-	local descendants = car_template:GetDescendants()
-	for _, descendant in ipairs(descendants) do
-		if descendant:IsA("Attachment") then
-			local constraints = descendant:GetConstraints()
-
-			print(descendant.Name, constraints)
-			print(descendant)
-			if next(constraints) == nil then
-				print(
-					"ATT WITN NO CONSTRAINT FOUNR ON "
-						.. descendant.Parent.Parent.Parent.Name
-						.. "."
-						.. descendant.Parent.Parent.Name
-						.. "."
-						.. descendant.Parent.Name
-						.. "."
-				)
-				--Attachment1=HingeATTACHMENT
-				--ATTACHMENT0=HingeAttachmentRR
-			end
-
-			print("------------------------------------------------------------")
-		end
-	end
 end)
+
+local NPCBinder = BinderProviderInitialized:Get("NPC")
+
+NPCBinder:GetClassAddedSignal():Connect(function(NPC)
+	NPC:Init()
+end)
+
+---== NPC Spawner ==---
+-- Builds the spawn pads and seeds an NPC on each. SpawnNpc tags each model "NPC",
+-- which is what makes NPCBinder above construct + :Init() its brain.
+local NpcSpawnerService = require(ReplicatedStorage.NPC.Services.NpcSpawnerService)
+local npcSpawner = NpcSpawnerService.new(serviceBag)
+npcSpawner:Start()
 
 -- TODO GET THE CAR TO SET THE NITRO
 setNitroEnabledRemote.OnServerEvent:Connect(function(player: Player, car: Model, isNitro: boolean)
@@ -104,3 +94,15 @@ remotes.ChooseCar.OnServerEvent:Connect(function(player: Player, carInformation)
 	end
 	binder:SpawnCar(player, carInformation)
 end)
+
+local getOwnerTag = require(ReplicatedStorage.Nevermore.Custom.carSpawning.src.Server.utils.getOwnerTag)
+
+local template = workspace["Fletcher Thunderbolt"]
+Players.PlayerAdded:Connect(function(a0: Player)
+	local ownerTag = getOwnerTag(a0)
+	template:AddTag(ownerTag)
+	template:AddTag("Car")
+	-- Since instance references can't be stored in attributes, the car owner is stored by UserId
+	template:SetAttribute(CarConstants.CAR_OWNER_ATTRIBUTE, a0.UserId)
+end)
+

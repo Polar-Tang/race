@@ -22,12 +22,10 @@ function AbsController.new(config: ControllersTypes.ControllConstructor): Contro
 		driverSeat = config.cart:FindFirstChild("DriverSeat"),
 		engine = config.cart:FindFirstChild("Engine"),
 	}
+	-- No AncestryChanged watcher here: controllers are owned by the Car binder's
+	-- maid, which destroys them. A per-controller watcher would race the owner and
+	-- fire callbacks on already-destroyed (metatable-stripped) controllers.
 	local self = setmetatable(configuration :: any, AbsController)
-	maid:GiveTask(config.cart.AncestryChanged:Connect(function(_, parent)
-		if not parent then
-			self:Destroy()
-		end
-	end))
 	return self
 end
 

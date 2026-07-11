@@ -76,7 +76,6 @@ end
 -- Update steering constraints
 function ConstraintUpdater._updateSteering(self: ControllersTypes.ConstraintUpdater)
 	local steering = self._steering
-
 	local length = steering:GetAttribute("steeringRackLength")
 	local responsiveness = steering:GetAttribute("steeringRackResponsiveness")
 	local speed = steering:GetAttribute("steeringRackSpeed")
@@ -88,7 +87,11 @@ function ConstraintUpdater._updateSteering(self: ControllersTypes.ConstraintUpda
 	steering.SteeringRack.Speed = speed
 	steering.SteeringRack.ServoMaxForce = maxForce
 end
-
+--[[
+local CarInitializer = require(game:GetService("ReplicatedStorage").Nevermore.Custom.car.src.Server.Controllers.CarInitializer)
+local cartIntiliazer = CarInitializer.new({cart = workspace.CartTest})
+cartIntiliazer:Init()
+]]
 -- Update redress constraints
 function ConstraintUpdater._updateRedress(self: ControllersTypes.ConstraintUpdater)
 	local redress = self._redress
@@ -96,7 +99,13 @@ function ConstraintUpdater._updateRedress(self: ControllersTypes.ConstraintUpdat
 	local maxTorque = redress:GetAttribute("redressMaxTorque")
 	local responsiveness = redress:GetAttribute("redressResponsiveness")
 
-	redress.RedressOrientation.MaxTorque = maxTorque
+	-- Rolling the car against gravity takes at least AssemblyMass * g * half-width;
+	-- using the full width gives ~2x margin. A fixed attribute (500k) is far too weak
+	-- for heavy cars (Thunderbolt: mass ~2350 needs ~1.9M), so treat it as a floor only.
+	local chassis = self.chassis
+	local requiredTorque = chassis.AssemblyMass * workspace.Gravity * chassis.Size.X
+
+	redress.RedressOrientation.MaxTorque = math.max(maxTorque, requiredTorque)
 	redress.RedressOrientation.Responsiveness = responsiveness
 end
 
