@@ -20,16 +20,12 @@ function Idle:OnEnter(data)
 	if data.MovementController then
 		data.MovementController:Stop()
 	end
-	if data.PetAnimatorController then
-		data.PetAnimatorController:LoadAnimation(false, "walk")
-		data.PetAnimatorController:LoadAnimation(true, "idle")
-	end
+	
+	data.AnimatorController:LoadAnimation(true, "idle")
 end
 
 function Idle:OnLeave(data)
-	if data.PetAnimatorController then
-		data.PetAnimatorController:LoadAnimation(false, "idle")
-	end
+		
 end
 
 -- Advancing the shared clock in every state keeps the interval-based transitions

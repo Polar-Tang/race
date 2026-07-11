@@ -19,8 +19,8 @@ function Eat:OnEnter(data)
 		data.MovementController:Stop()
 	end
 	if data.EatController then
-		-- EatController drives the shared PetAnimatorController.
-		data.EatController:Eat(data.PetAnimatorController)
+		-- EatController drives the shared AnimatorController.
+		data.EatController:Eat(data.AnimatorController)
 	end
 	if data.SoundController then
 		data.SoundController:Play("eat")
@@ -31,7 +31,7 @@ function Eat:OnLeave(data)
 	-- Reset the eat interval clock from the moment eating ended.
 	data.lastEatTime = data.timer
 	if data.EatController then
-		data.EatController:StopAnim(data.PetAnimatorController)
+		data.EatController:StopAnim(data.AnimatorController)
 	end
 	if data.SoundController then
 		data.SoundController:Stop("eat")

@@ -13,6 +13,21 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 
+-- Roblox's stock animation sets, keyed by rig type. Used as fallbacks so an NPC
+-- animates correctly whether it's an R6 or R15 rig -- the joint names differ, so
+-- an R15 clip on an R6 rig (or vice-versa) loads fine but visibly does nothing.
+-- Per-species `stats.animations` entries override these by name.
+local DEFAULT_ANIMATIONS: { [Enum.HumanoidRigType]: { [string]: string } } = {
+	[Enum.HumanoidRigType.R15] = {
+		idle = "rbxassetid://507766388",
+		walk = "rbxassetid://913402848",
+	},
+	[Enum.HumanoidRigType.R6] = {
+		idle = "rbxassetid://180435571",
+		walk = "rbxassetid://180426354",
+	},
+}
+
 local PetAnimatorController = {}
 PetAnimatorController.ClassName = "PetAnimatorController"
 PetAnimatorController.__index = PetAnimatorController
@@ -38,7 +53,18 @@ function PetAnimatorController.new(ctx: any, _serviceBag: any?, _player: Player?
 	self.pet = ctx.pet
 	self.humanoid = ctx.humanoid
 	self._animator = resolveAnimator(ctx.pet, ctx.humanoid)
-	self._ids = (ctx.stats and ctx.stats.animations) or {}
+
+	-- Start from the rig-correct defaults, then let per-species stats override by
+	-- name. Falls back to R15 when there's no humanoid to read a RigType from.
+	local rigType = ctx.humanoid and ctx.humanoid.RigType
+	local ids = table.clone((rigType and DEFAULT_ANIMATIONS[rigType]) or DEFAULT_ANIMATIONS[Enum.HumanoidRigType.R15])
+	if ctx.stats and ctx.stats.animations then
+		for name, id in ctx.stats.animations do
+			ids[name] = id
+		end
+	end
+	self._ids = ids
+
 	self._folder = ctx.pet:FindFirstChild("Animations")
 	self._tracks = {} :: { [string]: AnimationTrack }
 	self._maid = Maid.new()
@@ -109,6 +135,20 @@ end
 function PetAnimatorController:Stop(name: string)
 	self:LoadAnimation(false, name)
 end
+
+-- Named convenience wrappers for the walk clip, called by MovementController so
+-- the walk animation is driven from wherever real motion starts/stops.
+function PetAnimatorController:PlayWalk()
+	self:LoadAnimation(true, "walk")
+end
+
+function PetAnimatorController:StopWalk()
+	self:LoadAnimation(false, "walk")
+end
+
+-- DI entry point. The animator has no sibling dependencies, but every NPC
+-- controller implements :Init so setCtx can inject the controller set uniformly.
+function PetAnimatorController:Init(_controllers) end
 
 function PetAnimatorController:StopAll()
 	for _, track in self._tracks do

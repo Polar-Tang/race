@@ -41,6 +41,9 @@ function TargetController:getRandomNearbyPosition(range: number?): Vector3?
 	return candidate
 end
 
+-- DI entry point. No sibling dependencies; present so setCtx can inject uniformly.
+function TargetController:Init(_controllers) end
+
 function TargetController:Destroy()
 	self._maid:DoCleaning()
 end

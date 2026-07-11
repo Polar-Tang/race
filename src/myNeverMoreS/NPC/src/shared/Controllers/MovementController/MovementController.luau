@@ -12,6 +12,7 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 local Maid = require(ReplicatedStorage.Nevermore.Quenty.maid.Shared.Maid)
 
@@ -37,7 +38,50 @@ function MovementController.new(ctx: any, _serviceBag: any?, _player: Player?)
 		self.humanoid.WalkSpeed = self.speed
 	end
 
+	-- Network ownership + anchoring can only be handled on the server, and only
+	-- there does server-side Humanoid:MoveTo need to be authoritative.
+	if RunService:IsServer() then
+		self:_prepareForServerControl()
+	end
+
 	return self
+end
+
+-- Makes the rig actually drivable by the server:
+--   1. unanchor every part (ServerStorage templates are usually anchored, and an
+--      anchored assembly silently ignores Humanoid:MoveTo)
+--   2. hand simulation to the server via SetNetworkOwner(nil) so the server's
+--      MoveTo calls win (a nearby client can otherwise auto-claim ownership)
+function MovementController:_prepareForServerControl()
+	if not self.pet then
+		return
+	end
+
+	for _, part in self.pet:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.Anchored = false
+		end
+	end
+
+	-- Set ownership on the assembly's actual root part.
+	local rootPart = (self.humanoid and self.humanoid.RootPart) or self.root
+	if not rootPart then
+		return
+	end
+
+	local canSet, reason = rootPart:CanSetNetworkOwnership()
+	if canSet then
+		rootPart:SetNetworkOwner(nil) -- nil == the server
+	else
+		warn(`[MovementController] cannot take network ownership of {self.pet.Name}: {reason}`)
+	end
+end
+
+-- DI entry point (called by setCtx once every sibling controller exists). Wiring
+-- the animator here lets MoveTo drive the walk clip in lockstep with real motion:
+-- it starts when we start driving and stops the instant we arrive.
+function MovementController:Init(controllers)
+	self._animator = controllers and controllers.AnimatorController
 end
 
 -- Walk to a world position. Returns the estimated travel time in seconds so the
@@ -54,10 +98,20 @@ function MovementController:MoveTo(target: Vector3): number
 
 	self.isMoving = true
 
-	-- MoveToFinished fires on arrival OR the 8s Roblox timeout; either way the
-	-- move is over from our perspective.
+	-- We own the walk clip: play it exactly when motion starts...
+	if self._animator then
+		self._animator:PlayWalk()
+	end
+
+	-- ...and stop it the moment the humanoid arrives. MoveToFinished fires on
+	-- arrival OR the 8s Roblox timeout; either way the move (and the walk) is
+	-- over. Stopping here -- not in Patrol:OnLeave -- means the clip ends the
+	-- instant the NPC physically stops, with no lingering slide.
 	self._maid:GiveTask(self.humanoid.MoveToFinished:Once(function()
 		self.isMoving = false
+		if self._animator then
+			self._animator:StopWalk()
+		end
 	end))
 
 	self.humanoid:MoveTo(target)
@@ -81,6 +135,11 @@ end
 function MovementController:Stop()
 	self._maid:DoCleaning()
 	self.isMoving = false
+	-- Interruption safety: DoCleaning() dropped the MoveToFinished handler, so
+	-- stop the walk clip here too (e.g. Idle/Patrol yanking us out mid-walk).
+	if self._animator then
+		self._animator:StopWalk()
+	end
 	if self.humanoid and self.root then
 		-- Cancel the pending MoveTo by targeting our own position.
 		self.humanoid:MoveTo(self.root.Position)

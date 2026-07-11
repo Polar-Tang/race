@@ -21,9 +21,9 @@ function Die:OnEnter(data)
 	if data.EatController then
 		data.EatController:StopAnim()
 	end
-	if data.PetAnimatorController then
-		data.PetAnimatorController:StopAll()
-		data.PetAnimatorController:LoadAnimation(true, "die")
+	if data.AnimatorController then
+		data.AnimatorController:StopAll()
+		data.AnimatorController:LoadAnimation(true, "die")
 	end
 	if data.SoundController then
 		data.SoundController:Play("die")

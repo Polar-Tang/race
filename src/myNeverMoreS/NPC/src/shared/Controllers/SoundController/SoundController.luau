@@ -70,6 +70,9 @@ function SoundController:Stop(name: string)
 	end
 end
 
+-- DI entry point. No sibling dependencies; present so setCtx can inject uniformly.
+function SoundController:Init(_controllers) end
+
 function SoundController:Destroy()
 	for _, sound in self._sounds do
 		sound:Stop()

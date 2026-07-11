@@ -60,6 +60,10 @@ return function(pet: Model, serviceBag: any, player: Player?, maid: any, binder:
 			scream2 = "rbxassetid://76241194670489",
 			scream3 = "rbxassetid://93492108928718",
 		},
+		-- Per-species animation OVERRIDES only. Leave a name out and the
+		-- AnimatorController supplies the rig-correct default (R6 vs R15).
+		-- e.g. eat = "rbxassetid://...", die = "rbxassetid://..."
+		animations = {},
 	}
 
 	local root = resolveRoot(pet)
@@ -87,7 +91,7 @@ return function(pet: Model, serviceBag: any, player: Player?, maid: any, binder:
 	local controllers = {
 		MovementController = MovementController.new(petCtx, serviceBag, player),
 		TargetingController = TargetingController.new(petCtx, serviceBag, player),
-		PetAnimatorController = AnimatorController.new(petCtx, serviceBag, player),
+		AnimatorController = AnimatorController.new(petCtx, serviceBag, player),
 		-- Created unconditionally (not owner-gated): server-spawned NPCs have no
 		-- owner but still need to scream when hurt (see the HealthChanged hook below).
 		SoundController = SoundController.new(petCtx, serviceBag, player),
@@ -118,10 +122,15 @@ return function(pet: Model, serviceBag: any, player: Player?, maid: any, binder:
 		end))
 	end
 
-	-- Let sibling controllers reach each other through the shared petCtx. In
-	-- particular EatController plays its clip through the single PetAnimatorController.
-	petCtx.PetAnimatorController = controllers.PetAnimatorController
-	petCtx.MovementController = controllers.MovementController
+	-- Dependency injection: every controller now exists, so hand each the full
+	-- set via :Init. This is how MovementController reaches the AnimatorController
+	-- to stop the walk clip the instant MoveToFinished fires -- far tighter than
+	-- waiting for Patrol:OnLeave, which lags the humanoid's actual arrival.
+	for _, controller in controllers do
+		if controller.Init then
+			controller:Init(controllers)
+		end
+	end
 
 	return {
 		-- identity / lifecycle
@@ -151,7 +160,7 @@ return function(pet: Model, serviceBag: any, player: Player?, maid: any, binder:
 		-------- controllers --------
 		MovementController = controllers.MovementController,
 		TargetingController = controllers.TargetingController,
-		PetAnimatorController = controllers.PetAnimatorController,
+		AnimatorController = controllers.AnimatorController,
 		SoundController = controllers.SoundController,
 	}
 end

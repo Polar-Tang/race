@@ -30,9 +30,10 @@ function Patrol:OnEnter(data)
 	end
 
 	if data.MovementController then
-		data.MovementController:LookTo(goal)
 		-- MoveTo returns the estimated travel time; pad it so we don't cut the
 		-- walk short if the NPC has to path around something.
+		-- MoveTo now drives the walk clip itself (start on move, stop on arrival),
+		-- so Patrol no longer touches the animation.
 		data.patrol_duration = data.MovementController:MoveTo(goal) + 3
 	end
 end
